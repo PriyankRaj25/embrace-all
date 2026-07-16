@@ -14,16 +14,247 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      agent_runs: {
+        Row: {
+          agent_key: string
+          agent_name: string
+          completed_at: string | null
+          duration_ms: number | null
+          id: string
+          output: Json | null
+          project_id: string
+          reasoning: string | null
+          started_at: string
+          status: string
+          summary: string | null
+          user_id: string
+        }
+        Insert: {
+          agent_key: string
+          agent_name: string
+          completed_at?: string | null
+          duration_ms?: number | null
+          id?: string
+          output?: Json | null
+          project_id: string
+          reasoning?: string | null
+          started_at?: string
+          status?: string
+          summary?: string | null
+          user_id: string
+        }
+        Update: {
+          agent_key?: string
+          agent_name?: string
+          completed_at?: string | null
+          duration_ms?: number | null
+          id?: string
+          output?: Json | null
+          project_id?: string
+          reasoning?: string | null
+          started_at?: string
+          status?: string
+          summary?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "agent_runs_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      approvals: {
+        Row: {
+          approved: boolean | null
+          created_at: string
+          decided_at: string | null
+          id: string
+          notes: string | null
+          project_id: string
+          stage: string
+          user_id: string
+        }
+        Insert: {
+          approved?: boolean | null
+          created_at?: string
+          decided_at?: string | null
+          id?: string
+          notes?: string | null
+          project_id: string
+          stage: string
+          user_id: string
+        }
+        Update: {
+          approved?: boolean | null
+          created_at?: string
+          decided_at?: string | null
+          id?: string
+          notes?: string | null
+          project_id?: string
+          stage?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "approvals_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      artifacts: {
+        Row: {
+          created_at: string
+          data: Json
+          id: string
+          kind: string
+          project_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          data: Json
+          id?: string
+          kind: string
+          project_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          data?: Json
+          id?: string
+          kind?: string
+          project_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "artifacts_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          created_at: string
+          display_name: string | null
+          id: string
+          updated_at: string
+        }
+        Insert: {
+          avatar_url?: string | null
+          created_at?: string
+          display_name?: string | null
+          id: string
+          updated_at?: string
+        }
+        Update: {
+          avatar_url?: string | null
+          created_at?: string
+          display_name?: string | null
+          id?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      projects: {
+        Row: {
+          cloud: Database["public"]["Enums"]["cloud_provider"]
+          compliance: string[]
+          created_at: string
+          current_stage: string | null
+          estimated_monthly_cost: number | null
+          id: string
+          name: string
+          requirement: string
+          scale_hint: string | null
+          status: Database["public"]["Enums"]["project_status"]
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          cloud?: Database["public"]["Enums"]["cloud_provider"]
+          compliance?: string[]
+          created_at?: string
+          current_stage?: string | null
+          estimated_monthly_cost?: number | null
+          id?: string
+          name: string
+          requirement: string
+          scale_hint?: string | null
+          status?: Database["public"]["Enums"]["project_status"]
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          cloud?: Database["public"]["Enums"]["cloud_provider"]
+          compliance?: string[]
+          created_at?: string
+          current_stage?: string | null
+          estimated_monthly_cost?: number | null
+          id?: string
+          name?: string
+          requirement?: string
+          scale_hint?: string | null
+          status?: Database["public"]["Enums"]["project_status"]
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      user_roles: {
+        Row: {
+          created_at: string
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "admin" | "user"
+      cloud_provider: "aws" | "azure" | "gcp" | "multi"
+      project_status:
+        | "draft"
+        | "running"
+        | "awaiting_approval"
+        | "completed"
+        | "failed"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +381,16 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["admin", "user"],
+      cloud_provider: ["aws", "azure", "gcp", "multi"],
+      project_status: [
+        "draft",
+        "running",
+        "awaiting_approval",
+        "completed",
+        "failed",
+      ],
+    },
   },
 } as const
