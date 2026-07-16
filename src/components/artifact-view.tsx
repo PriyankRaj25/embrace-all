@@ -173,7 +173,7 @@ function Security({ d }: { d: Record<string, unknown> }) {
           <ul className="text-xs space-y-1 text-muted-foreground">{network.map((n, i) => <li key={i}>• {n}</li>)}</ul>
         </Section>
       )}
-      {d.secrets_management && <Section title="Secrets"><div className="text-xs">{d.secrets_management as string}</div></Section>}
+      {d.secrets_management ? <Section title="Secrets"><div className="text-xs">{String(d.secrets_management)}</div></Section> : null}
     </div>
   );
 }
