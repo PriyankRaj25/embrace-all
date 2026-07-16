@@ -44,7 +44,7 @@ function Requirements({ d }: { d: Record<string, unknown> }) {
   const constraints = (d.constraints as string[]) ?? [];
   return (
     <div>
-      {d.summary && <p className="text-sm mb-4">{d.summary as string}</p>}
+      {d.summary ? <p className="text-sm mb-4">{String(d.summary)}</p> : null}
       <Section title="Functional">
         <ul className="space-y-1.5">{functional.map((f, i) => (
           <li key={i} className="text-sm flex gap-2"><span className="text-aether font-mono text-xs">FR-{String(i + 1).padStart(2, "0")}</span>{f}</li>
