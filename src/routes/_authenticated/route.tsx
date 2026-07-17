@@ -1,7 +1,7 @@
 import { createFileRoute, Outlet, redirect, Link, useNavigate, useRouter } from "@tanstack/react-router";
 import { supabase } from "@/integrations/supabase/client";
 import { useEffect, useState } from "react";
-import { LayoutDashboard, PlusCircle, LogOut } from "lucide-react";
+import { LayoutDashboard, PlusCircle, LogOut, Bot, Gavel, DollarSign, ShieldCheck, Plug, Settings as SettingsIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useQueryClient } from "@tanstack/react-query";
 
