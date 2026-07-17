@@ -43,9 +43,17 @@ function AuthenticatedLayout() {
           </div>
           <span className="font-semibold tracking-tight">AetherOS</span>
         </Link>
-        <nav className="flex-1 p-3 space-y-1 text-sm">
-          <NavLink to="/dashboard" icon={LayoutDashboard} label="Projects" />
-          <NavLink to="/new" icon={PlusCircle} label="New Project" />
+        <nav className="flex-1 p-3 space-y-0.5 text-sm overflow-y-auto">
+          <NavLink to="/dashboard"    icon={LayoutDashboard} label="Projects" />
+          <NavLink to="/new"          icon={PlusCircle}      label="New Project" />
+          <div className="pt-4 pb-1 px-3 text-[10px] font-mono uppercase tracking-widest text-muted-foreground">Platform</div>
+          <NavLink to="/agents"       icon={Bot}             label="Agents" />
+          <NavLink to="/governance"   icon={Gavel}           label="Governance" />
+          <NavLink to="/compliance"   icon={ShieldCheck}     label="Compliance" />
+          <NavLink to="/finops"       icon={DollarSign}      label="FinOps" />
+          <NavLink to="/integrations" icon={Plug}            label="Integrations" />
+          <div className="pt-4 pb-1 px-3 text-[10px] font-mono uppercase tracking-widest text-muted-foreground">Account</div>
+          <NavLink to="/settings"     icon={SettingsIcon}    label="Settings" />
         </nav>
         <div className="p-3 border-t border-border/40 text-xs">
           <div className="px-2 py-2 text-muted-foreground truncate" title={email}>{email}</div>
