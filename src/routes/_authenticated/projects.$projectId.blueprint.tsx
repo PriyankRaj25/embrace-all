@@ -4,6 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { getProject } from "@/lib/projects.functions";
 import { AGENT_BY_KEY, STAGE_ORDER, type AgentKey } from "@/lib/agents";
 import { ArtifactView } from "@/components/artifact-view";
+import { ArchitectureDiagram } from "@/components/architecture-diagram";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, Download } from "lucide-react";
