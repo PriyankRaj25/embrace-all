@@ -106,3 +106,21 @@ function Blueprint() {
     </div>
   );
 }
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function SummaryCard({ project }: { project: any }) {
+  const compliance: string[] = Array.isArray(project.compliance) ? project.compliance : [];
+  const cost = project.estimated_monthly_cost;
+  return (
+    <div className="glass-panel rounded-2xl p-8 mb-8">
+      <div className="flex flex-wrap items-center gap-2 mb-4">
+        <Badge className="bg-aether/20 text-aether border-aether/40 font-mono">{String(project.cloud)}</Badge>
+        {compliance.map((c) => (<Badge key={c} variant="outline">{c}</Badge>))}
+        {cost != null ? (
+          <Badge variant="outline" className="ml-auto">${Number(cost).toFixed(0)}/mo</Badge>
+        ) : null}
+      </div>
+      <p className="text-lg leading-relaxed">{String(project.requirement ?? "")}</p>
+    </div>
+  );
+}
