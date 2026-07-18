@@ -68,6 +68,19 @@ function Blueprint() {
           <p className="text-lg leading-relaxed">{data.project.requirement}</p>
         </div>
 
+        {/* Architecture diagram */}
+        {(artifactsByKind.solution || artifactsByKind.cloud) && (
+          <section className="glass-panel rounded-2xl p-6 mb-8">
+            <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
+              <span className="text-aether">§</span> Architecture Diagram
+            </h2>
+            <ArchitectureDiagram
+              solution={artifactsByKind.solution as Parameters<typeof ArchitectureDiagram>[0]["solution"]}
+              cloud={artifactsByKind.cloud as Parameters<typeof ArchitectureDiagram>[0]["cloud"]}
+            />
+          </section>
+        )}
+
         {/* Sections */}
         <div className="space-y-8">
           {kinds.map((k) => (
