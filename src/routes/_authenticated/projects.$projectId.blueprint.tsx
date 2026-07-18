@@ -7,7 +7,8 @@ import { ArtifactView } from "@/components/artifact-view";
 import { ArchitectureDiagram } from "@/components/architecture-diagram";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { ArrowLeft, Download } from "lucide-react";
+import { ArrowLeft, Download, ClipboardList } from "lucide-react";
+import { BlueprintVersions } from "@/components/blueprint-versions";
 
 export const Route = createFileRoute("/_authenticated/projects/$projectId/blueprint")({
   component: Blueprint,
@@ -50,9 +51,16 @@ function Blueprint() {
             <h1 className="text-lg font-semibold">{data.project.name}</h1>
           </div>
         </div>
-        <Button variant="outline" size="sm" onClick={downloadJson}>
-          <Download className="h-3.5 w-3.5 mr-1.5" /> Export JSON
-        </Button>
+        <div className="flex items-center gap-2">
+          <Button asChild variant="outline" size="sm">
+            <Link to="/projects/$projectId/audit" params={{ projectId }}>
+              <ClipboardList className="h-3.5 w-3.5 mr-1.5" /> Audit
+            </Link>
+          </Button>
+          <Button variant="outline" size="sm" onClick={downloadJson}>
+            <Download className="h-3.5 w-3.5 mr-1.5" /> Export JSON
+          </Button>
+        </div>
       </header>
 
       <div className="max-w-6xl mx-auto p-8">
@@ -65,7 +73,7 @@ function Blueprint() {
               <Badge variant="outline" className="ml-auto">${Number(data.project.estimated_monthly_cost).toFixed(0)}/mo</Badge>
             )}
           </div>
-          <p className="text-lg leading-relaxed">{data.project.requirement}</p>
+          <p className="text-lg leading-relaxed">{String(data.project.requirement ?? "")}</p>
         </div>
 
         {/* Architecture diagram */}
