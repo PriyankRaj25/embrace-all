@@ -17,13 +17,15 @@ export const Route = createFileRoute("/_authenticated/projects/$projectId/bluepr
 function Blueprint() {
   const { projectId } = Route.useParams();
   const get = useServerFn(getProject);
-  const { data, isLoading } = useQuery({
+  const { data: raw, isLoading } = useQuery({
     queryKey: ["project", projectId],
     queryFn: () => get({ data: { id: projectId } }),
   });
 
-  if (isLoading || !data) return <div className="p-8 text-sm text-muted-foreground">Loading blueprint…</div>;
+  if (isLoading || !raw) return <div className="p-8 text-sm text-muted-foreground">Loading blueprint…</div>;
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const data: any = raw;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const project: any = data.project;
   const artifactsByKind: Record<string, unknown> = {};
@@ -68,7 +70,6 @@ function Blueprint() {
 
       <div className="max-w-6xl mx-auto p-8">
         {/* Summary */}
-        {/* @ts-expect-error tsgo widens JSX children through generic Query data */}
         <SummaryCard project={project} />
 
 
