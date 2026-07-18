@@ -4,6 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { getProject } from "@/lib/projects.functions";
 import { AGENT_BY_KEY, STAGE_ORDER, type AgentKey } from "@/lib/agents";
 import { ArtifactView } from "@/components/artifact-view";
+import { ArchitectureDiagram } from "@/components/architecture-diagram";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, Download } from "lucide-react";
@@ -59,13 +60,26 @@ function Blueprint() {
         <div className="glass-panel rounded-2xl p-8 mb-8">
           <div className="flex flex-wrap items-center gap-2 mb-4">
             <Badge className="bg-aether/20 text-aether border-aether/40 font-mono">{data.project.cloud}</Badge>
-            {data.project.compliance?.map((c) => <Badge key={c} variant="outline">{c}</Badge>)}
+            {(data.project.compliance as string[] | null)?.map((c) => <Badge key={c} variant="outline">{c}</Badge>)}
             {data.project.estimated_monthly_cost != null && (
               <Badge variant="outline" className="ml-auto">${Number(data.project.estimated_monthly_cost).toFixed(0)}/mo</Badge>
             )}
           </div>
           <p className="text-lg leading-relaxed">{data.project.requirement}</p>
         </div>
+
+        {/* Architecture diagram */}
+        {(artifactsByKind.solution || artifactsByKind.cloud) && (
+          <section className="glass-panel rounded-2xl p-6 mb-8">
+            <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
+              <span className="text-aether">§</span> Architecture Diagram
+            </h2>
+            <ArchitectureDiagram
+              solution={artifactsByKind.solution as Parameters<typeof ArchitectureDiagram>[0]["solution"]}
+              cloud={artifactsByKind.cloud as Parameters<typeof ArchitectureDiagram>[0]["cloud"]}
+            />
+          </section>
+        )}
 
         {/* Sections */}
         <div className="space-y-8">

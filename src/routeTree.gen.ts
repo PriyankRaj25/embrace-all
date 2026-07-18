@@ -23,6 +23,7 @@ import { Route as AuthenticatedComplianceRouteImport } from './routes/_authentic
 import { Route as AuthenticatedAgentsRouteImport } from './routes/_authenticated/agents'
 import { Route as AuthenticatedProjectsProjectIdRouteImport } from './routes/_authenticated/projects.$projectId'
 import { Route as AuthenticatedProjectsProjectIdBlueprintRouteImport } from './routes/_authenticated/projects.$projectId.blueprint'
+import { Route as AuthenticatedProjectsProjectIdArchitectureRouteImport } from './routes/_authenticated/projects.$projectId.architecture'
 
 const AuthRoute = AuthRouteImport.update({
   id: '/auth',
@@ -96,6 +97,12 @@ const AuthenticatedProjectsProjectIdBlueprintRoute =
     path: '/blueprint',
     getParentRoute: () => AuthenticatedProjectsProjectIdRoute,
   } as any)
+const AuthenticatedProjectsProjectIdArchitectureRoute =
+  AuthenticatedProjectsProjectIdArchitectureRouteImport.update({
+    id: '/architecture',
+    path: '/architecture',
+    getParentRoute: () => AuthenticatedProjectsProjectIdRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -110,6 +117,7 @@ export interface FileRoutesByFullPath {
   '/settings': typeof AuthenticatedSettingsRoute
   '/api/chat': typeof ApiChatRoute
   '/projects/$projectId': typeof AuthenticatedProjectsProjectIdRouteWithChildren
+  '/projects/$projectId/architecture': typeof AuthenticatedProjectsProjectIdArchitectureRoute
   '/projects/$projectId/blueprint': typeof AuthenticatedProjectsProjectIdBlueprintRoute
 }
 export interface FileRoutesByTo {
@@ -125,6 +133,7 @@ export interface FileRoutesByTo {
   '/settings': typeof AuthenticatedSettingsRoute
   '/api/chat': typeof ApiChatRoute
   '/projects/$projectId': typeof AuthenticatedProjectsProjectIdRouteWithChildren
+  '/projects/$projectId/architecture': typeof AuthenticatedProjectsProjectIdArchitectureRoute
   '/projects/$projectId/blueprint': typeof AuthenticatedProjectsProjectIdBlueprintRoute
 }
 export interface FileRoutesById {
@@ -142,6 +151,7 @@ export interface FileRoutesById {
   '/_authenticated/settings': typeof AuthenticatedSettingsRoute
   '/api/chat': typeof ApiChatRoute
   '/_authenticated/projects/$projectId': typeof AuthenticatedProjectsProjectIdRouteWithChildren
+  '/_authenticated/projects/$projectId/architecture': typeof AuthenticatedProjectsProjectIdArchitectureRoute
   '/_authenticated/projects/$projectId/blueprint': typeof AuthenticatedProjectsProjectIdBlueprintRoute
 }
 export interface FileRouteTypes {
@@ -159,6 +169,7 @@ export interface FileRouteTypes {
     | '/settings'
     | '/api/chat'
     | '/projects/$projectId'
+    | '/projects/$projectId/architecture'
     | '/projects/$projectId/blueprint'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -174,6 +185,7 @@ export interface FileRouteTypes {
     | '/settings'
     | '/api/chat'
     | '/projects/$projectId'
+    | '/projects/$projectId/architecture'
     | '/projects/$projectId/blueprint'
   id:
     | '__root__'
@@ -190,6 +202,7 @@ export interface FileRouteTypes {
     | '/_authenticated/settings'
     | '/api/chat'
     | '/_authenticated/projects/$projectId'
+    | '/_authenticated/projects/$projectId/architecture'
     | '/_authenticated/projects/$projectId/blueprint'
   fileRoutesById: FileRoutesById
 }
@@ -300,15 +313,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedProjectsProjectIdBlueprintRouteImport
       parentRoute: typeof AuthenticatedProjectsProjectIdRoute
     }
+    '/_authenticated/projects/$projectId/architecture': {
+      id: '/_authenticated/projects/$projectId/architecture'
+      path: '/architecture'
+      fullPath: '/projects/$projectId/architecture'
+      preLoaderRoute: typeof AuthenticatedProjectsProjectIdArchitectureRouteImport
+      parentRoute: typeof AuthenticatedProjectsProjectIdRoute
+    }
   }
 }
 
 interface AuthenticatedProjectsProjectIdRouteChildren {
+  AuthenticatedProjectsProjectIdArchitectureRoute: typeof AuthenticatedProjectsProjectIdArchitectureRoute
   AuthenticatedProjectsProjectIdBlueprintRoute: typeof AuthenticatedProjectsProjectIdBlueprintRoute
 }
 
 const AuthenticatedProjectsProjectIdRouteChildren: AuthenticatedProjectsProjectIdRouteChildren =
   {
+    AuthenticatedProjectsProjectIdArchitectureRoute:
+      AuthenticatedProjectsProjectIdArchitectureRoute,
     AuthenticatedProjectsProjectIdBlueprintRoute:
       AuthenticatedProjectsProjectIdBlueprintRoute,
   }
