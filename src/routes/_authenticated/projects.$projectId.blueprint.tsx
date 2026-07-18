@@ -24,9 +24,11 @@ function Blueprint() {
 
   if (isLoading || !data) return <div className="p-8 text-sm text-muted-foreground">Loading blueprint…</div>;
 
-  const project = data.project as { name: string; cloud: string; requirement: string; compliance: string[] | null; estimated_monthly_cost: number | null };
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const project: any = data.project;
   const artifactsByKind: Record<string, unknown> = {};
-  data.artifacts.forEach((a) => { artifactsByKind[a.kind] = a.data; });
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  data.artifacts.forEach((a: any) => { artifactsByKind[a.kind] = a.data; });
 
   function downloadJson() {
     const blob = new Blob([JSON.stringify({ project: data!.project, artifacts: artifactsByKind }, null, 2)], { type: "application/json" });
