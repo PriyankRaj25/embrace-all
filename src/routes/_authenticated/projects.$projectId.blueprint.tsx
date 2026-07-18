@@ -71,7 +71,9 @@ function Blueprint() {
         <div className="glass-panel rounded-2xl p-8 mb-8">
           <div className="flex flex-wrap items-center gap-2 mb-4">
             <Badge className="bg-aether/20 text-aether border-aether/40 font-mono">{String(project.cloud)}</Badge>
-            {(((project.compliance ?? []) as string[]).map((c) => <Badge key={c} variant="outline">{c}</Badge>)) as React.ReactNode}
+            {(project.compliance ?? []).map((c: string) => (
+              <Badge key={c} variant="outline">{c}</Badge>
+            ))}
             {project.estimated_monthly_cost != null ? (
               <Badge variant="outline" className="ml-auto">${Number(project.estimated_monthly_cost).toFixed(0)}/mo</Badge>
             ) : null}
