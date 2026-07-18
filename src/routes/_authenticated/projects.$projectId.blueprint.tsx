@@ -70,7 +70,7 @@ function Blueprint() {
 
       <div className="max-w-6xl mx-auto p-8">
         {/* Summary */}
-        {SummaryCard({ project }) as React.ReactNode}
+        <SummaryCard project={project} />
 
 
         {/* Architecture diagram */}
@@ -93,7 +93,7 @@ function Blueprint() {
               <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
                 <span className="text-aether">§</span> {AGENT_BY_KEY[k].name.replace(" Agent", "")}
               </h2>
-              <ArtifactView kind={k} data={artifactsByKind[k]} />
+              <ArtifactView kind={k} data={artifactsByKind[k] as never} />
             </section>
           ))}
         </div>
