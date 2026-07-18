@@ -101,6 +101,14 @@ function Blueprint() {
             </section>
           ))}
         </div>
+
+        <div className="mt-8">
+          <BlueprintVersions
+            projectId={projectId}
+            projectName={project.name}
+            currentData={{ project, artifacts: artifactsByKind }}
+          />
+        </div>
       </div>
     </div>
   );
