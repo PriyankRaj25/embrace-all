@@ -68,7 +68,9 @@ function Blueprint() {
 
       <div className="max-w-6xl mx-auto p-8">
         {/* Summary */}
+        {/* @ts-expect-error tsgo widens JSX children through generic Query data */}
         <SummaryCard project={project} />
+
 
         {/* Architecture diagram */}
         {(artifactsByKind.solution || artifactsByKind.cloud) && (
