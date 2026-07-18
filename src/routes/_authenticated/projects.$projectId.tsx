@@ -14,7 +14,7 @@ import { toast } from "sonner";
 import {
   Compass, ListChecks, Boxes, Network, Cloud, ShieldCheck, Gavel,
   DollarSign, HeartPulse, Code2, BookOpen, ScanEye, Loader2, Play,
-  CheckCircle2, Circle, XCircle, ChevronRight, FileText, ArrowLeft,
+  CheckCircle2, Circle, XCircle, ChevronRight, FileText, ArrowLeft, Workflow,
 } from "lucide-react";
 import { ArtifactView } from "@/components/artifact-view";
 
