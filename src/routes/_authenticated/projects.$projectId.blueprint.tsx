@@ -33,7 +33,7 @@ function Blueprint() {
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = `${data!.project.name.replace(/\s+/g, "-").toLowerCase()}-blueprint.json`;
+    a.download = `${project.name.replace(/\s+/g, "-").toLowerCase()}-blueprint.json`;
     a.click();
     URL.revokeObjectURL(url);
   }
@@ -49,7 +49,7 @@ function Blueprint() {
           </Link>
           <div>
             <div className="text-[10px] font-mono uppercase tracking-widest text-aether">Blueprint</div>
-            <h1 className="text-lg font-semibold">{data.project.name}</h1>
+            <h1 className="text-lg font-semibold">{project.name}</h1>
           </div>
         </div>
         <div className="flex items-center gap-2">
@@ -68,13 +68,13 @@ function Blueprint() {
         {/* Summary */}
         <div className="glass-panel rounded-2xl p-8 mb-8">
           <div className="flex flex-wrap items-center gap-2 mb-4">
-            <Badge className="bg-aether/20 text-aether border-aether/40 font-mono">{String(data.project.cloud)}</Badge>
-            {(data.project.compliance as string[] | null)?.map((c) => <Badge key={c} variant="outline">{c}</Badge>)}
-            {data.project.estimated_monthly_cost != null && (
-              <Badge variant="outline" className="ml-auto">${Number(data.project.estimated_monthly_cost).toFixed(0)}/mo</Badge>
+            <Badge className="bg-aether/20 text-aether border-aether/40 font-mono">{String(project.cloud)}</Badge>
+            {(project.compliance as string[] | null)?.map((c) => <Badge key={c} variant="outline">{c}</Badge>)}
+            {project.estimated_monthly_cost != null && (
+              <Badge variant="outline" className="ml-auto">${Number(project.estimated_monthly_cost).toFixed(0)}/mo</Badge>
             )}
           </div>
-          <p className="text-lg leading-relaxed">{String(data.project.requirement ?? "")}</p>
+          <p className="text-lg leading-relaxed">{String(project.requirement ?? "")}</p>
         </div>
 
         {/* Architecture diagram */}
