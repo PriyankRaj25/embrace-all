@@ -24,6 +24,7 @@ function Blueprint() {
 
   if (isLoading || !data) return <div className="p-8 text-sm text-muted-foreground">Loading blueprint…</div>;
 
+  const project = data.project as { name: string; cloud: string; requirement: string; compliance: string[] | null; estimated_monthly_cost: number | null };
   const artifactsByKind: Record<string, unknown> = {};
   data.artifacts.forEach((a) => { artifactsByKind[a.kind] = a.data; });
 
