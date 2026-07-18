@@ -70,7 +70,7 @@ function Blueprint() {
 
       <div className="max-w-6xl mx-auto p-8">
         {/* Summary */}
-        <SummaryCard project={project} />
+        {SummaryCard({ project }) as React.ReactNode}
 
 
         {/* Architecture diagram */}
