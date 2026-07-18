@@ -68,18 +68,7 @@ function Blueprint() {
 
       <div className="max-w-6xl mx-auto p-8">
         {/* Summary */}
-        <div className="glass-panel rounded-2xl p-8 mb-8">
-          <div className="flex flex-wrap items-center gap-2 mb-4">
-            <Badge className="bg-aether/20 text-aether border-aether/40 font-mono">{String(project.cloud)}</Badge>
-            {(project.compliance ?? []).map((c: string) => (
-              <Badge key={c} variant="outline">{c}</Badge>
-            ))}
-            {project.estimated_monthly_cost != null ? (
-              <Badge variant="outline" className="ml-auto">${Number(project.estimated_monthly_cost).toFixed(0)}/mo</Badge>
-            ) : null}
-          </div>
-          <p className="text-lg leading-relaxed">{String(project.requirement ?? "")}</p>
-        </div>
+        <SummaryCard project={project} />
 
         {/* Architecture diagram */}
         {(artifactsByKind.solution || artifactsByKind.cloud) && (
