@@ -182,6 +182,13 @@ function WorkspacePage() {
           </div>
         </div>
         <div className="flex items-center gap-2">
+          {(runByKey.solution?.status === "completed" || runByKey.cloud?.status === "completed") && (
+            <Button asChild variant="outline" size="sm">
+              <Link to="/projects/$projectId/architecture" params={{ projectId }}>
+                <Workflow className="h-3.5 w-3.5 mr-1.5" /> Architecture
+              </Link>
+            </Button>
+          )}
           {project.status === "completed" && (
             <Button asChild variant="outline" size="sm">
               <Link to="/projects/$projectId/blueprint" params={{ projectId }}>
