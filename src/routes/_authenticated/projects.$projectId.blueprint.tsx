@@ -69,42 +69,42 @@ function Blueprint() {
       </header>
 
       <div className="max-w-6xl mx-auto p-8">
-        {/* Summary */}
-        <SummaryCard project={project} />
+        {(
+          <>
+            <SummaryCard project={project} />
 
+            {(artifactsByKind.solution || artifactsByKind.cloud) ? (
+              <section className="glass-panel rounded-2xl p-6 mb-8">
+                <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
+                  <span className="text-aether">§</span> Architecture Diagram
+                </h2>
+                <ArchitectureDiagram
+                  solution={artifactsByKind.solution as Parameters<typeof ArchitectureDiagram>[0]["solution"]}
+                  cloud={artifactsByKind.cloud as Parameters<typeof ArchitectureDiagram>[0]["cloud"]}
+                />
+              </section>
+            ) : null}
 
-        {/* Architecture diagram */}
-        {(artifactsByKind.solution || artifactsByKind.cloud) && (
-          <section className="glass-panel rounded-2xl p-6 mb-8">
-            <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
-              <span className="text-aether">§</span> Architecture Diagram
-            </h2>
-            <ArchitectureDiagram
-              solution={artifactsByKind.solution as Parameters<typeof ArchitectureDiagram>[0]["solution"]}
-              cloud={artifactsByKind.cloud as Parameters<typeof ArchitectureDiagram>[0]["cloud"]}
-            />
-          </section>
-        )}
+            <div className="space-y-8">
+              {kinds.map((k: AgentKey) => (
+                <section key={k} className="glass-panel rounded-2xl p-6">
+                  <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
+                    <span className="text-aether">§</span> {AGENT_BY_KEY[k].name.replace(" Agent", "")}
+                  </h2>
+                  <ArtifactView kind={k} data={artifactsByKind[k] as never} />
+                </section>
+              ))}
+            </div>
 
-        {/* Sections */}
-        <div className="space-y-8">
-          {kinds.map((k) => (
-            <section key={k} className="glass-panel rounded-2xl p-6">
-              <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
-                <span className="text-aether">§</span> {AGENT_BY_KEY[k].name.replace(" Agent", "")}
-              </h2>
-              <ArtifactView kind={k} data={artifactsByKind[k] as never} />
-            </section>
-          ))}
-        </div>
-
-        <div className="mt-8">
-          <BlueprintVersions
-            projectId={projectId}
-            projectName={project.name}
-            currentData={{ project, artifacts: artifactsByKind }}
-          />
-        </div>
+            <div className="mt-8">
+              <BlueprintVersions
+                projectId={projectId}
+                projectName={project.name}
+                currentData={{ project, artifacts: artifactsByKind }}
+              />
+            </div>
+          </>
+        ) as React.ReactNode}
       </div>
     </div>
   );
