@@ -15,6 +15,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as ApiChatRouteImport } from './routes/api/chat'
 import { Route as AuthenticatedSimulationRouteImport } from './routes/_authenticated/simulation'
 import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticated/settings'
+import { Route as AuthenticatedOrganizationRouteImport } from './routes/_authenticated/organization'
 import { Route as AuthenticatedOperationsRouteImport } from './routes/_authenticated/operations'
 import { Route as AuthenticatedNewRouteImport } from './routes/_authenticated/new'
 import { Route as AuthenticatedMarketplaceRouteImport } from './routes/_authenticated/marketplace'
@@ -60,6 +61,12 @@ const AuthenticatedSettingsRoute = AuthenticatedSettingsRouteImport.update({
   path: '/settings',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedOrganizationRoute =
+  AuthenticatedOrganizationRouteImport.update({
+    id: '/organization',
+    path: '/organization',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedOperationsRoute = AuthenticatedOperationsRouteImport.update({
   id: '/operations',
   path: '/operations',
@@ -157,6 +164,7 @@ export interface FileRoutesByFullPath {
   '/marketplace': typeof AuthenticatedMarketplaceRoute
   '/new': typeof AuthenticatedNewRoute
   '/operations': typeof AuthenticatedOperationsRoute
+  '/organization': typeof AuthenticatedOrganizationRoute
   '/settings': typeof AuthenticatedSettingsRoute
   '/simulation': typeof AuthenticatedSimulationRoute
   '/api/chat': typeof ApiChatRoute
@@ -179,6 +187,7 @@ export interface FileRoutesByTo {
   '/marketplace': typeof AuthenticatedMarketplaceRoute
   '/new': typeof AuthenticatedNewRoute
   '/operations': typeof AuthenticatedOperationsRoute
+  '/organization': typeof AuthenticatedOrganizationRoute
   '/settings': typeof AuthenticatedSettingsRoute
   '/simulation': typeof AuthenticatedSimulationRoute
   '/api/chat': typeof ApiChatRoute
@@ -203,6 +212,7 @@ export interface FileRoutesById {
   '/_authenticated/marketplace': typeof AuthenticatedMarketplaceRoute
   '/_authenticated/new': typeof AuthenticatedNewRoute
   '/_authenticated/operations': typeof AuthenticatedOperationsRoute
+  '/_authenticated/organization': typeof AuthenticatedOrganizationRoute
   '/_authenticated/settings': typeof AuthenticatedSettingsRoute
   '/_authenticated/simulation': typeof AuthenticatedSimulationRoute
   '/api/chat': typeof ApiChatRoute
@@ -227,6 +237,7 @@ export interface FileRouteTypes {
     | '/marketplace'
     | '/new'
     | '/operations'
+    | '/organization'
     | '/settings'
     | '/simulation'
     | '/api/chat'
@@ -249,6 +260,7 @@ export interface FileRouteTypes {
     | '/marketplace'
     | '/new'
     | '/operations'
+    | '/organization'
     | '/settings'
     | '/simulation'
     | '/api/chat'
@@ -272,6 +284,7 @@ export interface FileRouteTypes {
     | '/_authenticated/marketplace'
     | '/_authenticated/new'
     | '/_authenticated/operations'
+    | '/_authenticated/organization'
     | '/_authenticated/settings'
     | '/_authenticated/simulation'
     | '/api/chat'
@@ -330,6 +343,13 @@ declare module '@tanstack/react-router' {
       path: '/settings'
       fullPath: '/settings'
       preLoaderRoute: typeof AuthenticatedSettingsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/organization': {
+      id: '/_authenticated/organization'
+      path: '/organization'
+      fullPath: '/organization'
+      preLoaderRoute: typeof AuthenticatedOrganizationRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/operations': {
@@ -473,6 +493,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedMarketplaceRoute: typeof AuthenticatedMarketplaceRoute
   AuthenticatedNewRoute: typeof AuthenticatedNewRoute
   AuthenticatedOperationsRoute: typeof AuthenticatedOperationsRoute
+  AuthenticatedOrganizationRoute: typeof AuthenticatedOrganizationRoute
   AuthenticatedSettingsRoute: typeof AuthenticatedSettingsRoute
   AuthenticatedSimulationRoute: typeof AuthenticatedSimulationRoute
   AuthenticatedProjectsProjectIdRoute: typeof AuthenticatedProjectsProjectIdRouteWithChildren
@@ -490,6 +511,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedMarketplaceRoute: AuthenticatedMarketplaceRoute,
   AuthenticatedNewRoute: AuthenticatedNewRoute,
   AuthenticatedOperationsRoute: AuthenticatedOperationsRoute,
+  AuthenticatedOrganizationRoute: AuthenticatedOrganizationRoute,
   AuthenticatedSettingsRoute: AuthenticatedSettingsRoute,
   AuthenticatedSimulationRoute: AuthenticatedSimulationRoute,
   AuthenticatedProjectsProjectIdRoute:
