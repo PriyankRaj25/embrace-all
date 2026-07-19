@@ -46,13 +46,25 @@ function AuthenticatedLayout() {
         <nav className="flex-1 p-3 space-y-0.5 text-sm overflow-y-auto">
           <NavLink to="/dashboard"    icon={LayoutDashboard} label="Projects" />
           <NavLink to="/new"          icon={PlusCircle}      label="New Project" />
-          <div className="pt-4 pb-1 px-3 text-[10px] font-mono uppercase tracking-widest text-muted-foreground">Platform</div>
+          <NavLink to="/activity"     icon={Activity}        label="Activity" />
+          <NavLink to="/approvals"    icon={CheckSquare}     label="Approvals" />
+          <div className="pt-4 pb-1 px-3 text-[10px] font-mono uppercase tracking-widest text-muted-foreground">Intelligence</div>
           <NavLink to="/agents"       icon={Bot}             label="Agents" />
+          <NavLink to="/knowledge"    icon={Network}         label="Knowledge" />
+          <NavLink to="/simulation"   icon={FlaskConical}    label="Simulation" />
+          <NavLink to="/marketplace"  icon={Store}           label="Marketplace" />
+          <div className="pt-4 pb-1 px-3 text-[10px] font-mono uppercase tracking-widest text-muted-foreground">Governance</div>
           <NavLink to="/governance"   icon={Gavel}           label="Governance" />
           <NavLink to="/compliance"   icon={ShieldCheck}     label="Compliance" />
+          <NavLink to="/well-architected" icon={Award}       label="Well-Architected" />
+          <NavLink to="/adrs"         icon={BookOpen}        label="Decisions" />
+          <div className="pt-4 pb-1 px-3 text-[10px] font-mono uppercase tracking-widest text-muted-foreground">Delivery</div>
+          <NavLink to="/deployments"  icon={Rocket}          label="Deployments" />
+          <NavLink to="/operations"   icon={Radio}           label="Operations" />
           <NavLink to="/finops"       icon={DollarSign}      label="FinOps" />
           <NavLink to="/integrations" icon={Plug}            label="Integrations" />
           <div className="pt-4 pb-1 px-3 text-[10px] font-mono uppercase tracking-widest text-muted-foreground">Account</div>
+          <NavLink to="/organization" icon={Building2}       label="Organization" />
           <NavLink to="/settings"     icon={SettingsIcon}    label="Settings" />
         </nav>
         <div className="p-3 border-t border-border/40 text-xs">
