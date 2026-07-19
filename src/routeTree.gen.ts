@@ -28,6 +28,7 @@ import { Route as AuthenticatedDashboardRouteImport } from './routes/_authentica
 import { Route as AuthenticatedComplianceRouteImport } from './routes/_authenticated/compliance'
 import { Route as AuthenticatedApprovalsRouteImport } from './routes/_authenticated/approvals'
 import { Route as AuthenticatedAgentsRouteImport } from './routes/_authenticated/agents'
+import { Route as AuthenticatedAdrsRouteImport } from './routes/_authenticated/adrs'
 import { Route as AuthenticatedProjectsProjectIdRouteImport } from './routes/_authenticated/projects.$projectId'
 import { Route as AuthenticatedProjectsProjectIdBlueprintRouteImport } from './routes/_authenticated/projects.$projectId.blueprint'
 import { Route as AuthenticatedProjectsProjectIdAuditRouteImport } from './routes/_authenticated/projects.$projectId.audit'
@@ -131,6 +132,11 @@ const AuthenticatedAgentsRoute = AuthenticatedAgentsRouteImport.update({
   path: '/agents',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedAdrsRoute = AuthenticatedAdrsRouteImport.update({
+  id: '/adrs',
+  path: '/adrs',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedProjectsProjectIdRoute =
   AuthenticatedProjectsProjectIdRouteImport.update({
     id: '/projects/$projectId',
@@ -159,6 +165,7 @@ const AuthenticatedProjectsProjectIdArchitectureRoute =
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
+  '/adrs': typeof AuthenticatedAdrsRoute
   '/agents': typeof AuthenticatedAgentsRoute
   '/approvals': typeof AuthenticatedApprovalsRoute
   '/compliance': typeof AuthenticatedComplianceRoute
@@ -183,6 +190,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
+  '/adrs': typeof AuthenticatedAdrsRoute
   '/agents': typeof AuthenticatedAgentsRoute
   '/approvals': typeof AuthenticatedApprovalsRoute
   '/compliance': typeof AuthenticatedComplianceRoute
@@ -209,6 +217,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/auth': typeof AuthRoute
+  '/_authenticated/adrs': typeof AuthenticatedAdrsRoute
   '/_authenticated/agents': typeof AuthenticatedAgentsRoute
   '/_authenticated/approvals': typeof AuthenticatedApprovalsRoute
   '/_authenticated/compliance': typeof AuthenticatedComplianceRoute
@@ -235,6 +244,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/auth'
+    | '/adrs'
     | '/agents'
     | '/approvals'
     | '/compliance'
@@ -259,6 +269,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/auth'
+    | '/adrs'
     | '/agents'
     | '/approvals'
     | '/compliance'
@@ -284,6 +295,7 @@ export interface FileRouteTypes {
     | '/'
     | '/_authenticated'
     | '/auth'
+    | '/_authenticated/adrs'
     | '/_authenticated/agents'
     | '/_authenticated/approvals'
     | '/_authenticated/compliance'
@@ -448,6 +460,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAgentsRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/adrs': {
+      id: '/_authenticated/adrs'
+      path: '/adrs'
+      fullPath: '/adrs'
+      preLoaderRoute: typeof AuthenticatedAdrsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/projects/$projectId': {
       id: '/_authenticated/projects/$projectId'
       path: '/projects/$projectId'
@@ -501,6 +520,7 @@ const AuthenticatedProjectsProjectIdRouteWithChildren =
   )
 
 interface AuthenticatedRouteRouteChildren {
+  AuthenticatedAdrsRoute: typeof AuthenticatedAdrsRoute
   AuthenticatedAgentsRoute: typeof AuthenticatedAgentsRoute
   AuthenticatedApprovalsRoute: typeof AuthenticatedApprovalsRoute
   AuthenticatedComplianceRoute: typeof AuthenticatedComplianceRoute
@@ -520,6 +540,7 @@ interface AuthenticatedRouteRouteChildren {
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedAdrsRoute: AuthenticatedAdrsRoute,
   AuthenticatedAgentsRoute: AuthenticatedAgentsRoute,
   AuthenticatedApprovalsRoute: AuthenticatedApprovalsRoute,
   AuthenticatedComplianceRoute: AuthenticatedComplianceRoute,
