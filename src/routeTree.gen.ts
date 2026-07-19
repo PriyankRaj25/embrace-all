@@ -13,6 +13,7 @@ import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ApiChatRouteImport } from './routes/api/chat'
+import { Route as AuthenticatedWellArchitectedRouteImport } from './routes/_authenticated/well-architected'
 import { Route as AuthenticatedSimulationRouteImport } from './routes/_authenticated/simulation'
 import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticated/settings'
 import { Route as AuthenticatedOrganizationRouteImport } from './routes/_authenticated/organization'
@@ -53,6 +54,12 @@ const ApiChatRoute = ApiChatRouteImport.update({
   path: '/api/chat',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedWellArchitectedRoute =
+  AuthenticatedWellArchitectedRouteImport.update({
+    id: '/well-architected',
+    path: '/well-architected',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedSimulationRoute = AuthenticatedSimulationRouteImport.update({
   id: '/simulation',
   path: '/simulation',
@@ -181,6 +188,7 @@ export interface FileRoutesByFullPath {
   '/organization': typeof AuthenticatedOrganizationRoute
   '/settings': typeof AuthenticatedSettingsRoute
   '/simulation': typeof AuthenticatedSimulationRoute
+  '/well-architected': typeof AuthenticatedWellArchitectedRoute
   '/api/chat': typeof ApiChatRoute
   '/projects/$projectId': typeof AuthenticatedProjectsProjectIdRouteWithChildren
   '/projects/$projectId/architecture': typeof AuthenticatedProjectsProjectIdArchitectureRoute
@@ -206,6 +214,7 @@ export interface FileRoutesByTo {
   '/organization': typeof AuthenticatedOrganizationRoute
   '/settings': typeof AuthenticatedSettingsRoute
   '/simulation': typeof AuthenticatedSimulationRoute
+  '/well-architected': typeof AuthenticatedWellArchitectedRoute
   '/api/chat': typeof ApiChatRoute
   '/projects/$projectId': typeof AuthenticatedProjectsProjectIdRouteWithChildren
   '/projects/$projectId/architecture': typeof AuthenticatedProjectsProjectIdArchitectureRoute
@@ -233,6 +242,7 @@ export interface FileRoutesById {
   '/_authenticated/organization': typeof AuthenticatedOrganizationRoute
   '/_authenticated/settings': typeof AuthenticatedSettingsRoute
   '/_authenticated/simulation': typeof AuthenticatedSimulationRoute
+  '/_authenticated/well-architected': typeof AuthenticatedWellArchitectedRoute
   '/api/chat': typeof ApiChatRoute
   '/_authenticated/projects/$projectId': typeof AuthenticatedProjectsProjectIdRouteWithChildren
   '/_authenticated/projects/$projectId/architecture': typeof AuthenticatedProjectsProjectIdArchitectureRoute
@@ -260,6 +270,7 @@ export interface FileRouteTypes {
     | '/organization'
     | '/settings'
     | '/simulation'
+    | '/well-architected'
     | '/api/chat'
     | '/projects/$projectId'
     | '/projects/$projectId/architecture'
@@ -285,6 +296,7 @@ export interface FileRouteTypes {
     | '/organization'
     | '/settings'
     | '/simulation'
+    | '/well-architected'
     | '/api/chat'
     | '/projects/$projectId'
     | '/projects/$projectId/architecture'
@@ -311,6 +323,7 @@ export interface FileRouteTypes {
     | '/_authenticated/organization'
     | '/_authenticated/settings'
     | '/_authenticated/simulation'
+    | '/_authenticated/well-architected'
     | '/api/chat'
     | '/_authenticated/projects/$projectId'
     | '/_authenticated/projects/$projectId/architecture'
@@ -354,6 +367,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/api/chat'
       preLoaderRoute: typeof ApiChatRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/well-architected': {
+      id: '/_authenticated/well-architected'
+      path: '/well-architected'
+      fullPath: '/well-architected'
+      preLoaderRoute: typeof AuthenticatedWellArchitectedRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/simulation': {
       id: '/_authenticated/simulation'
@@ -536,6 +556,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedOrganizationRoute: typeof AuthenticatedOrganizationRoute
   AuthenticatedSettingsRoute: typeof AuthenticatedSettingsRoute
   AuthenticatedSimulationRoute: typeof AuthenticatedSimulationRoute
+  AuthenticatedWellArchitectedRoute: typeof AuthenticatedWellArchitectedRoute
   AuthenticatedProjectsProjectIdRoute: typeof AuthenticatedProjectsProjectIdRouteWithChildren
 }
 
@@ -556,6 +577,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedOrganizationRoute: AuthenticatedOrganizationRoute,
   AuthenticatedSettingsRoute: AuthenticatedSettingsRoute,
   AuthenticatedSimulationRoute: AuthenticatedSimulationRoute,
+  AuthenticatedWellArchitectedRoute: AuthenticatedWellArchitectedRoute,
   AuthenticatedProjectsProjectIdRoute:
     AuthenticatedProjectsProjectIdRouteWithChildren,
 }
