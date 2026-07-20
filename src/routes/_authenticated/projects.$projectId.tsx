@@ -17,6 +17,7 @@ import {
   CheckCircle2, Circle, XCircle, ChevronRight, FileText, ArrowLeft, Workflow,
 } from "lucide-react";
 import { ArtifactView } from "@/components/artifact-view";
+import { DEMO_PROJECT_ID, demoProject, demoRuns, demoApprovals } from "@/lib/demo-blueprint";
 
 const ICONS: Record<string, typeof Compass> = {
   Compass, ListChecks, Boxes, Network, Cloud, ShieldCheck, Gavel,
@@ -40,6 +41,7 @@ export const Route = createFileRoute("/_authenticated/projects/$projectId")({
 
 function WorkspacePage() {
   const { projectId } = Route.useParams();
+  const isDemo = projectId === DEMO_PROJECT_ID;
   const get = useServerFn(getProject);
   const approve = useServerFn(setApproval);
   const qc = useQueryClient();
@@ -49,16 +51,22 @@ function WorkspacePage() {
   const [selectedArtifact, setSelectedArtifact] = useState<AgentKey | null>(null);
   const streamStartedRef = useRef(false);
 
-  const { data, isLoading } = useQuery({
+  const { data: fetched, isLoading } = useQuery({
     queryKey: ["project", projectId],
     queryFn: () => get({ data: { id: projectId } }),
+    enabled: !isDemo,
   });
+  const data = isDemo
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    ? ({ project: demoProject as any, runs: demoRuns as any, artifacts: [], approvals: demoApprovals as any })
+    : fetched;
 
   // Seed timeline from persisted runs
   useEffect(() => {
     if (!data) return;
     if (timeline.length > 0) return;
-    const seed: TimelineItem[] = data.runs.map((r) => ({
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const seed: TimelineItem[] = (data.runs as any[]).map((r: any) => ({
       key: r.agent_key as AgentKey,
       name: r.agent_name,
       status: r.status as RunStatus,
@@ -67,9 +75,13 @@ function WorkspacePage() {
       duration_ms: r.duration_ms ?? undefined,
       at: r.started_at,
     }));
-    setTimeline(seed);
-    if (seed.length && !selectedArtifact) {
-      const completed = seed.filter((s) => s.status === "completed");
+    // Dedupe by agent key — keep last (most recent) entry per agent
+    const byKey = new Map<string, TimelineItem>();
+    for (const s of seed) byKey.set(s.key, s);
+    const deduped = Array.from(byKey.values());
+    setTimeline(deduped);
+    if (deduped.length && !selectedArtifact) {
+      const completed = deduped.filter((s) => s.status === "completed" && s.key !== "planner");
       if (completed.length) setSelectedArtifact(completed[completed.length - 1].key);
     }
   }, [data, timeline.length, selectedArtifact]);
@@ -147,10 +159,11 @@ function WorkspacePage() {
 
   // Auto-start on draft projects
   useEffect(() => {
+    if (isDemo) return;
     if (data?.project?.status === "draft" && !streamStartedRef.current) {
       void startOrchestrator();
     }
-  }, [data?.project?.status, startOrchestrator]);
+  }, [data?.project?.status, startOrchestrator, isDemo]);
 
   const approveMut = useMutation({
     mutationFn: (stage: string) => approve({ data: { project_id: projectId, stage, approved: true } }),
@@ -158,7 +171,8 @@ function WorkspacePage() {
     onError: (e) => toast.error(e instanceof Error ? e.message : "Failed"),
   });
 
-  if (isLoading || !data) return <div className="p-8 text-sm text-muted-foreground">Loading workspace…</div>;
+  if (!isDemo && (isLoading || !data)) return <div className="p-8 text-sm text-muted-foreground">Loading workspace…</div>;
+  if (!data) return null;
 
   const project = data.project;
   const runByKey: Record<string, TimelineItem | undefined> = Object.fromEntries(timeline.map((t) => [t.key, t]));
@@ -318,7 +332,8 @@ function WorkspacePage() {
           <div className="border-t border-border/40 px-6 py-3 flex flex-wrap gap-2">
             {APPROVAL_STAGES.map((stage) => {
               const gateReady = runByKey[stage.after]?.status === "completed";
-              const approved = data.approvals.find((a) => a.stage === stage.key)?.approved === true;
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              const approved = (data.approvals as any[]).find((a: any) => a.stage === stage.key)?.approved === true;
               return (
                 <Button
                   key={stage.key} size="sm" variant={approved ? "default" : "outline"}

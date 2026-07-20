@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, Download, ClipboardList } from "lucide-react";
 import { BlueprintVersions } from "@/components/blueprint-versions";
+import { DEMO_PROJECT_ID, demoProject, demoArtifacts } from "@/lib/demo-blueprint";
 
 export const Route = createFileRoute("/_authenticated/projects/$projectId/blueprint")({
   component: Blueprint,
@@ -16,16 +17,20 @@ export const Route = createFileRoute("/_authenticated/projects/$projectId/bluepr
 
 function Blueprint() {
   const { projectId } = Route.useParams();
+  const isDemo = projectId === DEMO_PROJECT_ID;
   const get = useServerFn(getProject);
   const { data: raw, isLoading } = useQuery({
     queryKey: ["project", projectId],
     queryFn: () => get({ data: { id: projectId } }),
+    enabled: !isDemo,
   });
 
-  if (isLoading || !raw) return <div className="p-8 text-sm text-muted-foreground">Loading blueprint…</div>;
+  if (!isDemo && (isLoading || !raw)) return <div className="p-8 text-sm text-muted-foreground">Loading blueprint…</div>;
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const data: any = raw;
+  const data: any = isDemo
+    ? { project: demoProject, artifacts: Object.entries(demoArtifacts).map(([kind, d]) => ({ kind, data: d })) }
+    : raw;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const project: any = data.project;
   const artifactsByKind: Record<string, unknown> = {};
