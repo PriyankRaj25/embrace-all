@@ -4,7 +4,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { listProjects, deleteProject } from "@/lib/projects.functions";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { PlusCircle, Trash2, Sparkles, Cloud, DollarSign, Clock } from "lucide-react";
+import { PlusCircle, Trash2, Sparkles, Cloud, DollarSign, Clock, Workflow, FileText, PlayCircle } from "lucide-react";
 import { toast } from "sonner";
 import { formatDistanceToNow } from "date-fns";
 
