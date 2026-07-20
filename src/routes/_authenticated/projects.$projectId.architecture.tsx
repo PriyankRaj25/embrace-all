@@ -6,6 +6,7 @@ import { ArchitectureDiagram } from "@/components/architecture-diagram";
 import { ArrowLeft, Download } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { DEMO_PROJECT_ID, demoProject, demoArtifacts } from "@/lib/demo-blueprint";
 
 export const Route = createFileRoute("/_authenticated/projects/$projectId/architecture")({
   component: ArchitecturePage,
@@ -13,13 +14,19 @@ export const Route = createFileRoute("/_authenticated/projects/$projectId/archit
 
 function ArchitecturePage() {
   const { projectId } = Route.useParams();
+  const isDemo = projectId === DEMO_PROJECT_ID;
   const get = useServerFn(getProject);
-  const { data, isLoading } = useQuery({
+  const { data: fetched, isLoading } = useQuery({
     queryKey: ["project", projectId],
     queryFn: () => get({ data: { id: projectId } }),
+    enabled: !isDemo,
   });
+  const data = isDemo
+    ? { project: demoProject, artifacts: Object.entries(demoArtifacts).map(([kind, d]) => ({ kind, data: d })) }
+    : fetched;
 
-  if (isLoading || !data) return <div className="p-8 text-sm text-muted-foreground">Loading architecture…</div>;
+  if (!isDemo && (isLoading || !data)) return <div className="p-8 text-sm text-muted-foreground">Loading architecture…</div>;
+  if (!data) return null;
 
   const byKind: Record<string, unknown> = {};
   data.artifacts.forEach((a) => { byKind[a.kind] = a.data; });
