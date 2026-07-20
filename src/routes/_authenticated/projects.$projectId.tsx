@@ -17,6 +17,7 @@ import {
   CheckCircle2, Circle, XCircle, ChevronRight, FileText, ArrowLeft, Workflow,
 } from "lucide-react";
 import { ArtifactView } from "@/components/artifact-view";
+import { DEMO_PROJECT_ID, demoProject, demoRuns, demoApprovals } from "@/lib/demo-blueprint";
 
 const ICONS: Record<string, typeof Compass> = {
   Compass, ListChecks, Boxes, Network, Cloud, ShieldCheck, Gavel,
