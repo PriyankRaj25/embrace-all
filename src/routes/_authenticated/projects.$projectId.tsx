@@ -75,7 +75,11 @@ function WorkspacePage() {
       duration_ms: r.duration_ms ?? undefined,
       at: r.started_at,
     }));
-    setTimeline(seed);
+    // Dedupe by agent key — keep last (most recent) entry per agent
+    const byKey = new Map<string, TimelineItem>();
+    for (const s of seed) byKey.set(s.key, s);
+    const deduped = Array.from(byKey.values());
+    setTimeline(deduped);
     if (seed.length && !selectedArtifact) {
       const completed = seed.filter((s) => s.status === "completed");
       if (completed.length) setSelectedArtifact(completed[completed.length - 1].key);
