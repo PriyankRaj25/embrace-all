@@ -65,7 +65,8 @@ function WorkspacePage() {
   useEffect(() => {
     if (!data) return;
     if (timeline.length > 0) return;
-    const seed: TimelineItem[] = data.runs.map((r) => ({
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const seed: TimelineItem[] = (data.runs as any[]).map((r: any) => ({
       key: r.agent_key as AgentKey,
       name: r.agent_name,
       status: r.status as RunStatus,
