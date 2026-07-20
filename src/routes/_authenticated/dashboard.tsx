@@ -50,6 +50,44 @@ function Dashboard() {
         </Button>
       </header>
 
+      {/* Investor demo showcase */}
+      <div className="relative mb-8 overflow-hidden rounded-2xl border border-aether/40 bg-gradient-to-br from-aether/15 via-background to-background p-6">
+        <div className="absolute -right-16 -top-16 h-64 w-64 rounded-full bg-aether/20 blur-3xl" />
+        <div className="relative flex flex-wrap items-center justify-between gap-6">
+          <div className="min-w-0 max-w-2xl">
+            <div className="flex items-center gap-2">
+              <Badge className="bg-aether/25 text-aether border-aether/40 font-mono">LIVE DEMO</Badge>
+              <Badge variant="outline" className="font-mono text-[10px]">HIPAA · SOC2 · GDPR</Badge>
+              <Badge variant="outline" className="font-mono text-[10px]">AWS multi-region</Badge>
+            </div>
+            <h2 className="mt-3 text-2xl font-semibold tracking-tight">HealthTracker Pro — HIPAA-grade wearables platform</h2>
+            <p className="mt-2 text-sm text-muted-foreground">
+              A fully-populated investor-grade blueprint: 12 agents, 11 architecture components, 5 Terraform modules,
+              $187k/mo forecast, 99.99% SLA. Explore the interactive diagram, timeline and audit trail.
+            </p>
+          </div>
+          <div className="flex flex-col gap-2 min-w-[220px]">
+            <Button asChild size="lg" className="glow-aether">
+              <Link to="/projects/$projectId" params={{ projectId: "demo" }}>
+                <PlayCircle className="h-4 w-4 mr-2" /> Launch demo workspace
+              </Link>
+            </Button>
+            <div className="grid grid-cols-2 gap-2">
+              <Button asChild variant="outline" size="sm">
+                <Link to="/projects/$projectId/architecture" params={{ projectId: "demo" }}>
+                  <Workflow className="h-3.5 w-3.5 mr-1.5" /> Diagram
+                </Link>
+              </Button>
+              <Button asChild variant="outline" size="sm">
+                <Link to="/projects/$projectId/blueprint" params={{ projectId: "demo" }}>
+                  <FileText className="h-3.5 w-3.5 mr-1.5" /> Blueprint
+                </Link>
+              </Button>
+            </div>
+          </div>
+        </div>
+      </div>
+
       {isLoading && <div className="text-sm text-muted-foreground">Loading projects…</div>}
 
       {!isLoading && (!projects || projects.length === 0) && (
