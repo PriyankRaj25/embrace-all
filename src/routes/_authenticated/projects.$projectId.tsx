@@ -171,7 +171,8 @@ function WorkspacePage() {
     onError: (e) => toast.error(e instanceof Error ? e.message : "Failed"),
   });
 
-  if (isLoading || !data) return <div className="p-8 text-sm text-muted-foreground">Loading workspace…</div>;
+  if (!isDemo && (isLoading || !data)) return <div className="p-8 text-sm text-muted-foreground">Loading workspace…</div>;
+  if (!data) return null;
 
   const project = data.project;
   const runByKey: Record<string, TimelineItem | undefined> = Object.fromEntries(timeline.map((t) => [t.key, t]));
