@@ -159,6 +159,7 @@ function WorkspacePage() {
 
   // Auto-start on draft projects
   useEffect(() => {
+    if (isDemo) return;
     if (data?.project?.status === "draft" && !streamStartedRef.current) {
       void startOrchestrator();
     }
