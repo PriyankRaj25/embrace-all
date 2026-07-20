@@ -163,7 +163,7 @@ function WorkspacePage() {
     if (data?.project?.status === "draft" && !streamStartedRef.current) {
       void startOrchestrator();
     }
-  }, [data?.project?.status, startOrchestrator]);
+  }, [data?.project?.status, startOrchestrator, isDemo]);
 
   const approveMut = useMutation({
     mutationFn: (stage: string) => approve({ data: { project_id: projectId, stage, approved: true } }),
