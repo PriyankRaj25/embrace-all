@@ -326,7 +326,8 @@ function WorkspacePage() {
           <div className="border-t border-border/40 px-6 py-3 flex flex-wrap gap-2">
             {APPROVAL_STAGES.map((stage) => {
               const gateReady = runByKey[stage.after]?.status === "completed";
-              const approved = data.approvals.find((a) => a.stage === stage.key)?.approved === true;
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              const approved = (data.approvals as any[]).find((a: any) => a.stage === stage.key)?.approved === true;
               return (
                 <Button
                   key={stage.key} size="sm" variant={approved ? "default" : "outline"}
