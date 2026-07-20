@@ -80,8 +80,8 @@ function WorkspacePage() {
     for (const s of seed) byKey.set(s.key, s);
     const deduped = Array.from(byKey.values());
     setTimeline(deduped);
-    if (seed.length && !selectedArtifact) {
-      const completed = seed.filter((s) => s.status === "completed");
+    if (deduped.length && !selectedArtifact) {
+      const completed = deduped.filter((s) => s.status === "completed" && s.key !== "planner");
       if (completed.length) setSelectedArtifact(completed[completed.length - 1].key);
     }
   }, [data, timeline.length, selectedArtifact]);
