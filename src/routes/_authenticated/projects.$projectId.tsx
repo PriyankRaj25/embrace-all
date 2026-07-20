@@ -41,6 +41,7 @@ export const Route = createFileRoute("/_authenticated/projects/$projectId")({
 
 function WorkspacePage() {
   const { projectId } = Route.useParams();
+  const isDemo = projectId === DEMO_PROJECT_ID;
   const get = useServerFn(getProject);
   const approve = useServerFn(setApproval);
   const qc = useQueryClient();
@@ -50,10 +51,15 @@ function WorkspacePage() {
   const [selectedArtifact, setSelectedArtifact] = useState<AgentKey | null>(null);
   const streamStartedRef = useRef(false);
 
-  const { data, isLoading } = useQuery({
+  const { data: fetched, isLoading } = useQuery({
     queryKey: ["project", projectId],
     queryFn: () => get({ data: { id: projectId } }),
+    enabled: !isDemo,
   });
+  const data = isDemo
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    ? ({ project: demoProject as any, runs: demoRuns as any, artifacts: [], approvals: demoApprovals as any })
+    : fetched;
 
   // Seed timeline from persisted runs
   useEffect(() => {
