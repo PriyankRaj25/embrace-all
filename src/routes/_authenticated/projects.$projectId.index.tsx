@@ -185,53 +185,53 @@ function WorkspacePage() {
   const completedArtifacts = timeline.filter((t) => t.status === "completed" && t.key !== "planner");
 
   return (
-    <div className="h-screen flex flex-col">
+    <div className="h-screen flex flex-col bg-background">
       {/* Header */}
-      <header className="border-b border-border/40 px-6 py-3 flex items-center justify-between bg-background/60 backdrop-blur-xl">
+      <header className="border-b border-border/40 px-5 py-2.5 flex items-center justify-between glass-subtle">
         <div className="flex items-center gap-3 min-w-0">
-          <Link to="/dashboard" className="text-muted-foreground hover:text-foreground">
-            <ArrowLeft className="h-4 w-4" />
+          <Link to="/dashboard" className="h-7 w-7 grid place-items-center rounded-lg neumorph-sm text-muted-foreground hover:text-foreground">
+            <ArrowLeft className="h-3.5 w-3.5" />
           </Link>
           <div className="min-w-0">
             <div className="flex items-center gap-2">
-              <h1 className="font-semibold truncate">{project.name}</h1>
-              <Badge variant="outline" className="font-mono text-[10px]">{project.cloud}</Badge>
-              <Badge variant="outline" className="font-mono text-[10px]">{project.status.replace("_", " ")}</Badge>
+              <h1 className="font-medium text-sm truncate">{project.name}</h1>
+              <Badge variant="outline" className="font-mono text-[9px] h-4 px-1.5">{project.cloud}</Badge>
+              <Badge variant="outline" className="font-mono text-[9px] h-4 px-1.5">{project.status.replace("_", " ")}</Badge>
             </div>
-            <p className="text-xs text-muted-foreground truncate max-w-2xl">{project.requirement}</p>
+            <p className="text-[11px] text-muted-foreground truncate max-w-xl">{project.requirement}</p>
           </div>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1.5">
           {(runByKey.solution?.status === "completed" || runByKey.cloud?.status === "completed") && (
-            <Button asChild variant="outline" size="sm">
+            <Button asChild variant="ghost" size="sm" className="h-7 text-xs">
               <Link to="/projects/$projectId/architecture" params={{ projectId }}>
-                <Workflow className="h-3.5 w-3.5 mr-1.5" /> Architecture
+                <Workflow className="h-3 w-3 mr-1" /> Architecture
               </Link>
             </Button>
           )}
           {project.status === "completed" && (
-            <Button asChild variant="outline" size="sm">
+            <Button asChild variant="ghost" size="sm" className="h-7 text-xs">
               <Link to="/projects/$projectId/blueprint" params={{ projectId }}>
-                <FileText className="h-3.5 w-3.5 mr-1.5" /> View Blueprint
+                <FileText className="h-3 w-3 mr-1" /> Blueprint
               </Link>
             </Button>
           )}
           {(project.status === "failed" || project.status === "draft") && !running && (
-            <Button size="sm" onClick={() => { streamStartedRef.current = false; void startOrchestrator(); }}>
-              <Play className="h-3.5 w-3.5 mr-1.5" /> Run orchestrator
+            <Button size="sm" className="h-7 text-xs" onClick={() => { streamStartedRef.current = false; void startOrchestrator(); }}>
+              <Play className="h-3 w-3 mr-1" /> Run
             </Button>
           )}
           <Button
             size="sm"
-            variant={chatOpen ? "default" : "outline"}
+            variant={chatOpen ? "default" : "ghost"}
             onClick={() => setChatOpen((v) => !v)}
-            className={chatOpen ? "bg-foreground text-background hover:bg-foreground/90" : ""}
+            className={`h-7 text-xs ${chatOpen ? "bg-foreground text-background hover:bg-foreground/90" : ""}`}
           >
-            <MessageSquare className="h-3.5 w-3.5 mr-1.5" /> Ask
+            <MessageSquare className="h-3 w-3 mr-1" /> Ask
           </Button>
           {running && (
-            <div className="flex items-center gap-2 text-xs text-muted-foreground font-mono">
-              <Loader2 className="h-3.5 w-3.5 animate-spin" />
+            <div className="flex items-center gap-1.5 text-[11px] text-muted-foreground font-mono ml-1">
+              <Loader2 className="h-3 w-3 animate-spin" />
               {activeAgent ? AGENT_BY_KEY[activeAgent].name : "planning"}
             </div>
           )}
@@ -247,11 +247,12 @@ function WorkspacePage() {
       />
 
 
-      {/* 3-column layout */}
-      <div className="flex-1 grid grid-cols-[240px_1fr_480px] min-h-0">
+      {/* 3-column layout — tighter */}
+      <div className="flex-1 grid grid-cols-[220px_1fr_400px] min-h-0">
         {/* Agent roster */}
-        <aside className="border-r border-border/40 overflow-y-auto p-3 space-y-1 bg-sidebar/40">
-          <div className="px-2 py-1.5 text-[10px] font-mono uppercase tracking-widest text-muted-foreground">Agents</div>
+        <aside className="border-r border-border/40 overflow-y-auto p-2 space-y-0.5 glass-subtle">
+          <div className="px-2 py-1.5 text-[9px] font-mono uppercase tracking-widest text-muted-foreground">Agents</div>
+
           {AGENTS.map((a) => {
             const Icon = ICONS[a.icon] ?? Compass;
             const run = runByKey[a.key];
@@ -261,22 +262,22 @@ function WorkspacePage() {
               <button
                 key={a.key}
                 onClick={() => run?.status === "completed" && setSelectedArtifact(a.key)}
-                className={`w-full text-left rounded-md p-2 flex items-start gap-2.5 transition ${
-                  selectedArtifact === a.key ? "bg-sidebar-accent" : "hover:bg-sidebar-accent/60"
+                className={`w-full text-left rounded-lg p-1.5 flex items-center gap-2 transition ${
+                  selectedArtifact === a.key ? "neumorph-sm" : "hover:bg-sidebar-accent/40"
                 }`}
               >
-                <div className={`rounded-md p-1.5 mt-0.5 ring-1 ${
-                  isActive ? "bg-aether/30 ring-aether pulse-ring" :
-                  status === "completed" ? "bg-success/20 ring-success/40" :
-                  status === "failed" ? "bg-destructive/20 ring-destructive/40" :
-                  "bg-secondary ring-border"
+                <div className={`rounded-md p-1 ring-1 ${
+                  isActive ? "bg-foreground/10 ring-foreground/40 pulse-ring" :
+                  status === "completed" ? "bg-success/15 ring-success/30" :
+                  status === "failed" ? "bg-destructive/15 ring-destructive/30" :
+                  "bg-secondary/40 ring-border/50"
                 }`}>
-                  <Icon className="h-3.5 w-3.5" />
+                  <Icon className="h-3 w-3" />
                 </div>
                 <div className="min-w-0 flex-1">
-                  <div className="text-xs font-medium truncate">{a.name}</div>
-                  <div className="text-[10px] font-mono uppercase text-muted-foreground">
-                    {status === "running" ? "thinking…" : status}
+                  <div className="text-[11px] font-medium truncate leading-tight">{a.name.replace(" Agent","")}</div>
+                  <div className="text-[9px] font-mono uppercase text-muted-foreground/70 leading-tight">
+                    {status === "running" ? "thinking" : status}
                   </div>
                 </div>
                 <StatusIcon status={status} />
@@ -287,10 +288,11 @@ function WorkspacePage() {
 
         {/* Timeline */}
         <section className="min-w-0 overflow-hidden flex flex-col">
-          <div className="px-6 py-4 border-b border-border/40 flex items-center gap-2">
-            <div className="text-[10px] font-mono uppercase tracking-widest text-aether">Engineering Timeline</div>
-            {running && <span className="ml-2 text-[10px] font-mono text-muted-foreground animate-pulse">live</span>}
+          <div className="px-5 py-2.5 border-b border-border/40 flex items-center gap-2 glass-subtle">
+            <div className="text-[9px] font-mono uppercase tracking-widest text-muted-foreground">Engineering Timeline</div>
+            {running && <span className="ml-1 text-[9px] font-mono text-muted-foreground animate-pulse">● live</span>}
           </div>
+
           <ScrollArea className="flex-1">
             <div className="p-6 space-y-3">
               <AnimatePresence>
