@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import mermaid from "mermaid";
 import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 import { ZoomIn, ZoomOut, Maximize2, Download, RotateCcw, ImageDown, Database, CloudCog, Route as RouteIcon } from "lucide-react";
 
 mermaid.initialize({
