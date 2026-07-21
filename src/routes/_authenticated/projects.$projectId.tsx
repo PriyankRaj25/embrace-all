@@ -18,6 +18,10 @@ import {
 } from "lucide-react";
 import { ArtifactView } from "@/components/artifact-view";
 import { DEMO_PROJECT_ID, demoProject, demoRuns, demoApprovals, demoArtifacts } from "@/lib/demo-blueprint";
+import { OrchestrationOverlay } from "@/components/orchestration-overlay";
+import { WorkspaceChat } from "@/components/workspace-chat";
+import { MessageSquare } from "lucide-react";
+
 
 const ICONS: Record<string, typeof Compass> = {
   Compass, ListChecks, Boxes, Network, Cloud, ShieldCheck, Gavel,
