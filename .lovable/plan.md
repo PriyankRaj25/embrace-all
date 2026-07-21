@@ -1,96 +1,103 @@
-# AetherOS — AI Operating System for Enterprise Engineering
+## Direction
+Strip AetherOS to a minimal, AI-agent-first product with a **Salt & Pepper** identity: pure black, pure white, and a single ink-grey scale. No color accents. One core loop: **chat → agents run → blueprint + architecture**. Everything per-project.
 
-An AI-native workspace where users describe a business goal in natural language and watch a swarm of specialized agents plan, design, govern, generate, and simulate a production-ready cloud architecture in real time.
+## 1. Salt & Pepper design system
+Rewrite `src/styles.css`:
+- Background: `#ffffff` (light) / `#0a0a0a` (dark). Dark by default.
+- Surfaces: `#111111`, `#161616`, `#1c1c1c` step scale.
+- Foreground: `#f5f5f5`. Muted: `#a1a1a1`, `#6b6b6b`.
+- Borders: white/8 hairlines.
+- **No color accents.** All emphasis via weight, contrast, and whitespace. Focus/selection = pure white ring on black (or inverse). "Success/warning/destructive" use grey scale + iconography, not color.
+- Utilities: `hairline` (1px white/10 border), `paper` (bright inverted card), `noise-overlay` (subtle SVG grain), `ink-gradient-text` (white→grey text mask).
+- Typography: Geist Sans everywhere; Geist Mono for metadata/IDs. Tight tracking on display H1s, generous line-height on body.
+- Motion: reserved — `fade-up`, `text-reveal`, slow `orbit`. No glow, no aurora.
+- Kill every purple/indigo/ember token and `text-aether` usage across the repo.
 
-## Scope (v1)
+## 2. Information architecture — remove bloat
+Compare to PRD. Keep only what serves the core agent loop.
 
-A working prototype with real AI. Not a mock. Not the full 30+ agent farm — a focused, believable subset that demonstrates the vision end-to-end.
+**Delete** (route files + sidebar entries): `activity`, `adrs`, `approvals`, `deployments`, `governance`, `integrations`, `knowledge`, `marketplace`, `operations`, `organization`, `simulation`, `well-architected`, `agents` (standalone), `finops` (standalone), `compliance` (standalone), `settings` (standalone).
 
-## Core experience
-
-1. **Landing** — bold hero explaining AetherOS, the "intelligence layer above coding assistants" positioning, module grid, agent architecture diagram, CTA to launch workspace.
-2. **New Project** — user enters a business requirement (e.g. *"Multi-tenant healthcare SaaS for 20M users, HIPAA on AWS"*), picks target cloud (AWS / Azure / GCP), compliance tags, scale hint.
-3. **Orchestration Workspace** (the heart of the app) — split layout:
-   - **Left rail:** Agent roster with live status pills (idle / thinking / done / awaiting approval).
-   - **Center:** Real-time engineering timeline — streaming events ("Requirements analyzed", "Cloud services selected", "Security review passed", "Terraform generated"), each expandable to show the agent's reasoning and artifact.
-   - **Right rail:** Artifact viewer tabs — Architecture, Infrastructure, Security & Compliance, Cost, Disaster Recovery, IaC, Docs, ADRs.
-   - **Bottom:** Human approval gates ("Approve architecture", "Approve infrastructure", "Approve deployment").
-4. **Blueprint view** — final polished report with architecture diagram (SVG generated from JSON), service list, cost projection chart, compliance matrix, downloadable Terraform.
-5. **Projects dashboard** — list of past blueprints with status, cost, compliance badges.
-
-## Agent pipeline (v1 subset)
-
-Orchestrated by a Planning Agent, executed with streaming AI SDK tool calls:
-
-- **Planning Agent** — decomposes request, emits execution plan.
-- **Requirements Agent** — structures functional/non-functional requirements.
-- **Domain Modeling Agent** — bounded contexts, entities.
-- **Solution Architecture Agent** — component diagram (JSON → SVG).
-- **Cloud Architecture Agent** — picks concrete AWS/Azure/GCP services.
-- **Security & IAM Agent** — IAM roles, encryption, network segmentation.
-- **Compliance Agent** — maps to HIPAA/SOC2/GDPR/PCI controls.
-- **FinOps Agent** — monthly cost projection with breakdown.
-- **Reliability Agent** — DR strategy, RPO/RTO, failure scenarios.
-- **IaC Generation Agent** — Terraform snippets per service.
-- **Documentation Agent** — architecture doc + ADRs.
-- **Reviewer/Governance Agent** — critiques and flags risks before human approval.
-
-Each agent = one AI SDK tool call with a Zod schema for its structured output. The Planning Agent runs the loop with `stepCountIs(50)`, streaming `data-*` parts back to the UI so the timeline animates as each agent finishes.
-
-## Design direction
-
-Modern enterprise-AI aesthetic — dark by default:
-- Deep charcoal background (`oklch(0.15 0.02 260)`) with subtle grid texture.
-- Electric aether accent (violet-cyan gradient: `oklch(0.72 0.19 280)` → `oklch(0.78 0.15 210)`).
-- Mono for code/IDs (JetBrains Mono), Geist Sans for UI, Geist for display.
-- Glassmorphic panels with hairline borders, glow on active agents.
-- Motion: agent nodes pulse while thinking, timeline events slide in with stagger, streaming text shimmer.
-- Reference vibe: Linear × Vercel × Warp × Cursor.
-
-## Technical plan
-
-**Stack:** TanStack Start (already set up), Tailwind v4, shadcn, AI SDK, Lovable AI Gateway (`openai/gpt-5.5`), Lovable Cloud (Supabase) for project & blueprint persistence + auth.
-
-**Routes:**
+**Keep** 5 surfaces:
 - `/` — landing
-- `/auth` — login/signup (email+password + Google)
-- `/_authenticated/dashboard` — projects list
-- `/_authenticated/new` — requirement intake form
-- `/_authenticated/projects/$projectId` — orchestration workspace (live)
-- `/_authenticated/projects/$projectId/blueprint` — final report
+- `/auth` — sign in
+- `/dashboard` — project list
+- `/new` — intake
+- `/projects/$projectId` — the workspace (everything per-project lives here)
 
-**Backend:**
-- Enable Lovable Cloud + Google auth.
-- Tables: `profiles`, `user_roles`, `projects`, `agent_runs` (streamed events), `artifacts` (JSON blobs per agent output), `approvals`.
-- RLS scoped to `auth.uid()`; roles table + `has_role()` helper for future admin.
-- Server route `src/routes/api/chat.ts` — streams the orchestrator using `streamText` + tools per agent, persists artifacts in `onFinish`. `toUIMessageStreamResponse` with `data-*` parts drives the timeline.
-- `createServerFn` for CRUD (create project, list projects, load blueprint).
-- `LOVABLE_API_KEY` provisioned via `ai_gateway--create`.
+Sidebar collapses to: Projects, New, user menu. No "modules" nav.
 
-**Frontend:**
-- `useChat` bound to `/api/chat` with `id = projectId` — messages are agent events, not user chat.
-- Custom message-part renderers for each artifact type (architecture JSON → SVG diagram, cost JSON → Recharts bar, compliance → matrix, IaC → syntax-highlighted code block via `shiki`).
-- Framer Motion for timeline stagger + agent status transitions.
-- Approval gates call server functions that flip `approvals` rows and unblock the next stage.
+## 3. Landing (`src/routes/index.tsx`)
+Minimal, cinematic, monochrome:
+- Full-viewport hero: giant display headline in white with ink-gradient reveal, one-line subhead, single CTA "Open workspace", ghost "See demo".
+- Behind headline: slow low-opacity agent orbit (12 white nodes on black) + fine noise grain.
+- One scroll: 3-tile capability strip → mini blueprint preview → footer.
+- No auto-redirect. No teaser prompt. No marquee.
 
-## What's explicitly out of scope for v1
+## 4. Project workspace (`_authenticated/projects.$projectId.tsx`)
+Redesign as a 3-pane layout. All removed "modules" fold in here per-project.
 
-- Real cloud deployment / actually running Terraform.
-- MCP client integrations with real AWS accounts.
-- Live production telemetry ingestion / continuous optimization loop.
-- Multi-tenant org management beyond per-user isolation.
-- The full 30+ agent catalog — v1 ships the 12 above; the architecture supports adding more later without refactor.
+```
+┌──────────────────────────────────────────────────────────┐
+│ Top bar: project · status · Open blueprint · Diagram     │
+├────────────┬─────────────────────────┬───────────────────┤
+│ Left rail  │ Center canvas           │ Right rail        │
+│ (agents +  │ (active artifact or     │ (per-project      │
+│  timeline) │  architecture diagram)  │  option tabs)     │
+├────────────┴─────────────────────────┴───────────────────┤
+│ Bottom: chat composer (always visible, Cursor-style)     │
+└──────────────────────────────────────────────────────────┘
+```
 
-These are the natural next milestones once v1 is validated.
+- **Left rail (240px):** 12 agents vertical, status dot + duration. Click focuses that agent's artifact in the center.
+- **Center canvas:** default = selected artifact via `ArtifactView`. Toggle to full architecture diagram inline. Minimal chrome, wide breathing room.
+- **Right rail (320px, tabbed):** per-project options:
+  - Overview (requirements, NFRs)
+  - Compliance (this project's HIPAA/SOC2/GDPR matrix)
+  - FinOps (this project's cost + forecast)
+  - Governance (this project's approvals + policies)
+  - Comments (per selected artifact)
+  - Versions (blueprint snapshots)
+  - Audit (this project's timeline)
+  - Settings (per-project model + agent prefs)
+- **Bottom chat composer:** slim always-visible input, white focus ring. Submit triggers orchestration overlay. Uses existing `useChat` + local thread store, thread scoped to project.
 
-## Build order
+Threads sidebar / standalone chat page **removed**. Delete `/chat/$threadId` route and `chat.$threadId` file. Delete `ai-chat.tsx`; replace with lean `workspace-chat.tsx`.
 
-1. Enable Lovable Cloud, provision AI key, configure Google auth.
-2. Design tokens + landing page.
-3. Auth + dashboard shell + sidebar.
-4. DB schema (projects, agent_runs, artifacts, approvals) + RLS + grants.
-5. Intake form → creates project row → navigates to workspace.
-6. Orchestrator server route with the 12 agent tools (Zod-validated structured outputs).
-7. Workspace UI: agent roster, streaming timeline, artifact tabs.
-8. Approval gates + blueprint view with diagram/cost chart/IaC.
-9. Polish: motion, empty states, error handling for 429/402.
+## 5. Fullscreen orchestration overlay
+`src/components/orchestration-overlay.tsx`:
+- Fires on chat submit / agent start. Full-screen frosted black.
+- Left: 12-agent stack, current one bright white, others dimmed to grey.
+- Center: per-stage minimal monochrome scene (requirement chips flowing in, domain graph drawing, cloud nodes assembling, compliance stamps, cost bars, terraform typing). One scene at a time.
+- Right: streaming reasoning log (mono, dim grey).
+- On completion: overlay recedes → lands on blueprint view. Minimize + skip controls.
+- Driven by `demoRuns` timing in demo mode; NDJSON stream otherwise.
+
+## 6. Blueprint + Architecture — make them wonderful
+`projects.$projectId.blueprint.tsx`:
+- Editorial long-form. Centered 720px column, generous type, off-white on black.
+- Thin left-gutter section anchors. Numbered headings (01 Requirements → 11 Reviewer) with a one-line summary, then rich `ArtifactView`.
+- Full-bleed architecture diagram inline at the Solution section.
+- Sticky top bar: project · Download PDF · Open diagram · version selector.
+- White pull-quotes, hairline callouts. No color anywhere.
+
+`architecture-diagram.tsx` + `projects.$projectId.architecture.tsx`:
+- Recolor Mermaid to white nodes / grey edges on black. Selected node fills white, others dim.
+- Full-bleed canvas, floating minimal control cluster (zoom, fit, orientation, isolate, export SVG/PNG).
+- Slim right inspector shows selected node metadata only.
+
+## 7. Component sweep
+- **Delete:** `ai-chat.tsx`, every removed route file.
+- **Add:** `workspace-chat.tsx`, `orchestration-overlay.tsx`, `project-right-rail.tsx`, `agent-stack.tsx`, `flare-logo.tsx` (now a mono mark), `landing/hero.tsx`, `landing/agent-orbit.tsx`.
+- **Update:** `_authenticated/route.tsx` (minimal sidebar), `dashboard.tsx` (minimal card grid), `new.tsx` (minimal form), `blueprint.tsx` (editorial), `architecture-diagram.tsx` (mono recolor + inspector), `artifact-view.tsx` (mono accents, tighter spacing).
+- Repo-wide search-replace: purple/ember tokens → salt & pepper greyscale.
+
+## Out of scope
+- No backend / schema / RLS / server-fn changes.
+- No auth flow changes.
+- `demo-blueprint.ts` reused; presentation only.
+
+## Technical notes
+- Framer Motion (installed) drives orbit, overlay transitions, scroll reveals.
+- All colors as OKLCH tokens in `@theme inline`; no hex in components.
+- Right-rail tabs reuse `demoArtifacts` in demo mode and existing Supabase queries otherwise — no new fetchers.
