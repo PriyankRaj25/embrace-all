@@ -12,6 +12,7 @@ import { BlueprintVersions } from "@/components/blueprint-versions";
 import { DEMO_PROJECT_ID, demoProject, demoArtifacts } from "@/lib/demo-blueprint";
 
 export const Route = createFileRoute("/_authenticated/projects/$projectId/blueprint")({
+  ssr: false,
   component: Blueprint,
 });
 

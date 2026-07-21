@@ -9,6 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { DEMO_PROJECT_ID, demoProject, demoArtifacts } from "@/lib/demo-blueprint";
 
 export const Route = createFileRoute("/_authenticated/projects/$projectId/architecture")({
+  ssr: false,
   component: ArchitecturePage,
 });
 

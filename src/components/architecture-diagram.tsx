@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import mermaid from "mermaid";
 import { Button } from "@/components/ui/button";
-import { ZoomIn, ZoomOut, Maximize2, Download, RotateCcw, ImageDown } from "lucide-react";
+import { ZoomIn, ZoomOut, Maximize2, Download, RotateCcw, ImageDown, Database, CloudCog, Route as RouteIcon } from "lucide-react";
 
 mermaid.initialize({
   startOnLoad: false,
@@ -109,6 +109,7 @@ export function ArchitectureDiagram({ solution, cloud }: { solution?: Solution; 
   const hostRef = useRef<HTMLDivElement>(null);
   const stageRef = useRef<HTMLDivElement>(null);
   const [err, setErr] = useState<string | null>(null);
+  const [rendered, setRendered] = useState(false);
   const [source, setSource] = useState<string>("");
   const [orientation, setOrientation] = useState<"LR" | "TB">("LR");
   const [scale, setScale] = useState(1);
@@ -122,12 +123,14 @@ export function ArchitectureDiagram({ solution, cloud }: { solution?: Solution; 
   useEffect(() => {
     let cancelled = false;
     setSource(src);
+    setRendered(false);
     (async () => {
       try {
         const { svg } = await mermaid.render(`arch-${Math.random().toString(36).slice(2)}`, src);
         if (!cancelled && hostRef.current) {
           hostRef.current.innerHTML = svg;
           setErr(null);
+          setRendered(true);
           const svgEl = hostRef.current.querySelector("svg");
           if (svgEl) {
             svgEl.style.maxWidth = "none";
@@ -144,7 +147,10 @@ export function ArchitectureDiagram({ solution, cloud }: { solution?: Solution; 
           }
         }
       } catch (e) {
-        if (!cancelled) setErr(e instanceof Error ? e.message : "Diagram render failed");
+        if (!cancelled) {
+          setErr(e instanceof Error ? e.message : "Diagram render failed");
+          setRendered(false);
+        }
       }
     })();
     return () => { cancelled = true; };
@@ -284,9 +290,14 @@ export function ArchitectureDiagram({ solution, cloud }: { solution?: Solution; 
           className="absolute inset-0 flex items-center justify-center transition-transform"
           style={{ transform: `translate(${tx}px, ${ty}px) scale(${scale})`, transformOrigin: "center" }}
         >
-          <div ref={hostRef} className="mermaid-host" />
+          {err ? (
+            <TopologyFallback solution={solution} cloud={cloud} selected={selected} onSelect={setSelected} />
+          ) : (
+            <div ref={hostRef} className={cn("mermaid-host", !rendered && "opacity-0")} />
+          )}
         </div>
-        {err && <div className="absolute bottom-2 left-2 text-xs text-destructive font-mono">{err}</div>}
+        {!rendered && !err && <div className="absolute inset-0 grid place-items-center text-xs font-mono text-muted-foreground">Rendering topology…</div>}
+        {err && <div className="absolute bottom-2 left-2 text-xs text-warning font-mono">Mermaid fallback active: {err}</div>}
         <div className="absolute top-2 left-2 text-[10px] font-mono text-muted-foreground bg-background/60 rounded px-2 py-1">
           drag to pan · ⌘/Ctrl + scroll to zoom · click node to isolate
         </div>
@@ -307,6 +318,69 @@ export function ArchitectureDiagram({ solution, cloud }: { solution?: Solution; 
         <summary className="cursor-pointer hover:text-foreground">Mermaid source</summary>
         <pre className="mt-2 p-3 rounded-md bg-secondary/40 overflow-auto">{source}</pre>
       </details>
+    </div>
+  );
+}
+
+function TopologyFallback({
+  solution,
+  cloud,
+  selected,
+  onSelect,
+}: {
+  solution?: Solution;
+  cloud?: Cloud;
+  selected: string | null;
+  onSelect: (id: string | null) => void;
+}) {
+  const components = solution?.components ?? [];
+  const dataFlow = solution?.data_flow ?? [];
+  return (
+    <div className="grid h-full w-full grid-cols-[1fr_260px] gap-4 p-6">
+      <div className="relative grid auto-rows-min grid-cols-3 content-center gap-4">
+        {components.map((component) => {
+          const id = sanitize(component.id || component.name);
+          const isSelected = selected === id;
+          const KindIcon = component.kind?.toLowerCase().includes("data") || component.kind?.toLowerCase().includes("db")
+            ? Database
+            : component.kind?.toLowerCase().includes("gateway") || component.kind?.toLowerCase().includes("edge")
+              ? RouteIcon
+              : CloudCog;
+          return (
+            <button
+              key={id}
+              className={`rounded-lg border p-3 text-left transition ${isSelected ? "border-aether bg-aether/15" : "border-border/60 bg-secondary/30 hover:border-aether/50"}`}
+              onClick={(event) => {
+                event.stopPropagation();
+                onSelect(isSelected ? null : id);
+              }}
+              type="button"
+            >
+              <div className="flex items-start gap-2">
+                <KindIcon className="mt-0.5 size-4 text-aether" />
+                <div className="min-w-0">
+                  <div className="truncate text-sm font-semibold">{component.name}</div>
+                  <div className="font-mono text-[10px] uppercase text-muted-foreground">{component.kind}</div>
+                </div>
+              </div>
+            </button>
+          );
+        })}
+      </div>
+      <div className="rounded-lg border border-border/60 bg-background/70 p-4">
+        <div className="text-[10px] font-mono uppercase tracking-widest text-aether">{cloud?.provider ?? "Cloud"}</div>
+        <div className="mt-1 text-sm text-muted-foreground">{cloud?.region ?? "Target topology"}</div>
+        <div className="mt-4 space-y-2">
+          {dataFlow.map((flow, index) => (
+            <div key={`${flow.from}-${flow.to}-${index}`} className="rounded-md bg-secondary/40 px-3 py-2 text-xs">
+              <span className="font-mono text-aether">{flow.from}</span>
+              <span className="mx-2 text-muted-foreground">→</span>
+              <span className="font-mono text-aether">{flow.to}</span>
+              {flow.label && <div className="mt-1 text-muted-foreground">{flow.label}</div>}
+            </div>
+          ))}
+        </div>
+      </div>
     </div>
   );
 }
