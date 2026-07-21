@@ -221,14 +221,31 @@ function WorkspacePage() {
               <Play className="h-3.5 w-3.5 mr-1.5" /> Run orchestrator
             </Button>
           )}
+          <Button
+            size="sm"
+            variant={chatOpen ? "default" : "outline"}
+            onClick={() => setChatOpen((v) => !v)}
+            className={chatOpen ? "bg-foreground text-background hover:bg-foreground/90" : ""}
+          >
+            <MessageSquare className="h-3.5 w-3.5 mr-1.5" /> Ask
+          </Button>
           {running && (
-            <div className="flex items-center gap-2 text-xs text-aether font-mono">
+            <div className="flex items-center gap-2 text-xs text-muted-foreground font-mono">
               <Loader2 className="h-3.5 w-3.5 animate-spin" />
               {activeAgent ? AGENT_BY_KEY[activeAgent].name : "planning"}
             </div>
           )}
         </div>
       </header>
+
+      <OrchestrationOverlay
+        open={running}
+        activeAgent={activeAgent}
+        timeline={timeline}
+        projectName={project.name}
+        onClose={() => setRunning(false)}
+      />
+
 
       {/* 3-column layout */}
       <div className="flex-1 grid grid-cols-[240px_1fr_480px] min-h-0">
