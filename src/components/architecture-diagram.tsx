@@ -6,21 +6,23 @@ import { ZoomIn, ZoomOut, Maximize2, Download, RotateCcw, ImageDown, Database, C
 
 mermaid.initialize({
   startOnLoad: false,
-  theme: "dark",
+  theme: "base",
   securityLevel: "loose",
   fontFamily: "ui-monospace, SFMono-Regular, Menlo, monospace",
   themeVariables: {
     background: "transparent",
-    primaryColor: "#1e1b4b",
-    primaryTextColor: "#e0e7ff",
-    primaryBorderColor: "#6366f1",
-    lineColor: "#6366f1",
-    secondaryColor: "#312e81",
-    tertiaryColor: "#0f172a",
-    clusterBkg: "rgba(99,102,241,0.06)",
-    clusterBorder: "#6366f1",
+    primaryColor: "#161616",
+    primaryTextColor: "#f5f5f5",
+    primaryBorderColor: "#3a3a3a",
+    lineColor: "#8a8a8a",
+    secondaryColor: "#1f1f1f",
+    tertiaryColor: "#0d0d0d",
+    clusterBkg: "rgba(255,255,255,0.02)",
+    clusterBorder: "#2a2a2a",
+    edgeLabelBackground: "#0d0d0d",
   },
 });
+
 
 interface Solution {
   pattern?: string;
@@ -50,11 +52,12 @@ function shapeFor(kind = ""): [string, string] {
 
 export function buildMermaid(solution?: Solution, cloud?: Cloud, orientation: "LR" | "TB" = "LR"): string {
   const lines: string[] = [`flowchart ${orientation}`];
-  lines.push("  classDef edge fill:#0b1220,stroke:#6366f1,color:#e0e7ff");
-  lines.push("  classDef svc  fill:#1e1b4b,stroke:#8b5cf6,color:#ede9fe");
-  lines.push("  classDef data fill:#0f172a,stroke:#22d3ee,color:#cffafe");
-  lines.push("  classDef ext  fill:#111827,stroke:#f59e0b,color:#fde68a,stroke-dasharray:4 3");
-  lines.push("  classDef hi   stroke:#f472b6,stroke-width:3px");
+  lines.push("  classDef edge fill:#0d0d0d,stroke:#666,color:#eee");
+  lines.push("  classDef svc  fill:#161616,stroke:#888,color:#f5f5f5");
+  lines.push("  classDef data fill:#0d0d0d,stroke:#bbb,color:#f5f5f5");
+  lines.push("  classDef ext  fill:#0d0d0d,stroke:#666,color:#ccc,stroke-dasharray:4 3");
+  lines.push("  classDef hi   stroke:#fff,stroke-width:3px");
+
 
   lines.push("  user((User)):::ext");
 
@@ -174,7 +177,7 @@ export function ArchitectureDiagram({ solution, cloud }: { solution?: Solution; 
         const cls = ep.getAttribute("class") ?? "";
         if (cls.includes(selected)) {
           ep.style.opacity = "1";
-          ep.querySelectorAll<SVGPathElement>("path").forEach((p) => { p.style.opacity = "1"; p.style.stroke = "#f472b6"; });
+          ep.querySelectorAll<SVGPathElement>("path").forEach((p) => { p.style.opacity = "1"; p.style.stroke = "#fff"; });
         } else {
           ep.querySelectorAll<SVGPathElement>("path").forEach((p) => { p.style.stroke = ""; });
         }
@@ -234,7 +237,7 @@ export function ArchitectureDiagram({ solution, cloud }: { solution?: Solution; 
       const canvas = document.createElement("canvas");
       canvas.width = rect.width * 2; canvas.height = rect.height * 2;
       const ctx = canvas.getContext("2d")!;
-      ctx.fillStyle = "#0b1020"; ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.fillStyle = "#0d0d0d"; ctx.fillRect(0, 0, canvas.width, canvas.height);
       ctx.scale(2, 2);
       ctx.drawImage(img, 0, 0);
       canvas.toBlob((b) => {
@@ -263,8 +266,9 @@ export function ArchitectureDiagram({ solution, cloud }: { solution?: Solution; 
     <div className="space-y-3">
       <div className="flex flex-wrap items-center gap-2">
         <div className="inline-flex rounded-md border border-border/60 overflow-hidden">
-          <button onClick={() => setOrientation("LR")} className={`px-2.5 py-1 text-[10px] font-mono ${orientation === "LR" ? "bg-aether/20 text-foreground" : "text-muted-foreground"}`}>LR</button>
-          <button onClick={() => setOrientation("TB")} className={`px-2.5 py-1 text-[10px] font-mono border-l border-border/60 ${orientation === "TB" ? "bg-aether/20 text-foreground" : "text-muted-foreground"}`}>TB</button>
+          <button onClick={() => setOrientation("LR")} className={`px-2.5 py-1 text-[10px] font-mono ${orientation === "LR" ? "bg-secondary text-foreground" : "text-muted-foreground"}`}>LR</button>
+          <button onClick={() => setOrientation("TB")} className={`px-2.5 py-1 text-[10px] font-mono border-l border-border/60 ${orientation === "TB" ? "bg-secondary text-foreground" : "text-muted-foreground"}`}>TB</button>
+
         </div>
         <Button size="sm" variant="outline" onClick={zoomOut}><ZoomOut className="h-3.5 w-3.5" /></Button>
         <span className="text-[10px] font-mono text-muted-foreground w-10 text-center">{Math.round(scale * 100)}%</span>

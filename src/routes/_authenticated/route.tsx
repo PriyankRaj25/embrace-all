@@ -1,7 +1,7 @@
 import { createFileRoute, Outlet, redirect, Link, useNavigate, useRouter } from "@tanstack/react-router";
 import { supabase } from "@/integrations/supabase/client";
 import { useEffect, useState } from "react";
-import { LayoutDashboard, PlusCircle, LogOut, Bot, Gavel, DollarSign, ShieldCheck, Plug, Settings as SettingsIcon, Activity, Network, FlaskConical, Store, Rocket, Radio, Building2, BookOpen, Award, CheckSquare } from "lucide-react";
+import { LayoutGrid, PlusCircle, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useQueryClient } from "@tanstack/react-query";
 
@@ -35,40 +35,17 @@ function AuthenticatedLayout() {
 
   return (
     <div className="min-h-screen flex">
-      {/* Sidebar */}
-      <aside className="w-60 shrink-0 border-r border-border/40 bg-sidebar/60 backdrop-blur-xl flex flex-col">
-        <Link to="/" className="flex items-center gap-2 px-5 py-5 border-b border-border/40">
-          <div className="grid h-8 w-8 place-items-center rounded-lg bg-gradient-to-br from-aether to-aether-glow">
-            <span className="font-mono font-bold text-primary-foreground text-sm">Æ</span>
-          </div>
-          <span className="font-semibold tracking-tight">AetherOS</span>
+      <aside className="w-56 shrink-0 border-r border-border bg-sidebar/80 backdrop-blur-xl flex flex-col">
+        <Link to="/" className="flex items-center gap-2.5 px-5 h-14 border-b border-border">
+          <div className="grid h-6 w-6 place-items-center rounded-md bg-foreground text-background text-[11px] font-mono font-bold">Æ</div>
+          <span className="font-medium tracking-tight text-sm">AetherOS</span>
         </Link>
-        <nav className="flex-1 p-3 space-y-0.5 text-sm overflow-y-auto">
-          <NavLink to="/dashboard"    icon={LayoutDashboard} label="Projects" />
-          <NavLink to="/new"          icon={PlusCircle}      label="New Project" />
-          <NavLink to="/activity"     icon={Activity}        label="Activity" />
-          <NavLink to="/approvals"    icon={CheckSquare}     label="Approvals" />
-          <div className="pt-4 pb-1 px-3 text-[10px] font-mono uppercase tracking-widest text-muted-foreground">Intelligence</div>
-          <NavLink to="/agents"       icon={Bot}             label="Agents" />
-          <NavLink to="/knowledge"    icon={Network}         label="Knowledge" />
-          <NavLink to="/simulation"   icon={FlaskConical}    label="Simulation" />
-          <NavLink to="/marketplace"  icon={Store}           label="Marketplace" />
-          <div className="pt-4 pb-1 px-3 text-[10px] font-mono uppercase tracking-widest text-muted-foreground">Governance</div>
-          <NavLink to="/governance"   icon={Gavel}           label="Governance" />
-          <NavLink to="/compliance"   icon={ShieldCheck}     label="Compliance" />
-          <NavLink to="/well-architected" icon={Award}       label="Well-Architected" />
-          <NavLink to="/adrs"         icon={BookOpen}        label="Decisions" />
-          <div className="pt-4 pb-1 px-3 text-[10px] font-mono uppercase tracking-widest text-muted-foreground">Delivery</div>
-          <NavLink to="/deployments"  icon={Rocket}          label="Deployments" />
-          <NavLink to="/operations"   icon={Radio}           label="Operations" />
-          <NavLink to="/finops"       icon={DollarSign}      label="FinOps" />
-          <NavLink to="/integrations" icon={Plug}            label="Integrations" />
-          <div className="pt-4 pb-1 px-3 text-[10px] font-mono uppercase tracking-widest text-muted-foreground">Account</div>
-          <NavLink to="/organization" icon={Building2}       label="Organization" />
-          <NavLink to="/settings"     icon={SettingsIcon}    label="Settings" />
+        <nav className="flex-1 p-2 space-y-0.5 text-sm">
+          <NavLink to="/dashboard" icon={LayoutGrid} label="Projects" />
+          <NavLink to="/new"       icon={PlusCircle} label="New project" />
         </nav>
-        <div className="p-3 border-t border-border/40 text-xs">
-          <div className="px-2 py-2 text-muted-foreground truncate" title={email}>{email}</div>
+        <div className="p-2 border-t border-border text-xs">
+          <div className="px-3 py-2 text-muted-foreground truncate" title={email}>{email}</div>
           <Button variant="ghost" size="sm" onClick={signOut} className="w-full justify-start text-muted-foreground hover:text-foreground">
             <LogOut className="h-3.5 w-3.5 mr-2" /> Sign out
           </Button>
@@ -81,7 +58,7 @@ function AuthenticatedLayout() {
   );
 }
 
-function NavLink({ to, icon: Icon, label }: { to: string; icon: typeof LayoutDashboard; label: string }) {
+function NavLink({ to, icon: Icon, label }: { to: string; icon: typeof LayoutGrid; label: string }) {
   return (
     <Link
       to={to}

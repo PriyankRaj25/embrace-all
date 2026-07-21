@@ -18,6 +18,10 @@ import {
 } from "lucide-react";
 import { ArtifactView } from "@/components/artifact-view";
 import { DEMO_PROJECT_ID, demoProject, demoRuns, demoApprovals, demoArtifacts } from "@/lib/demo-blueprint";
+import { OrchestrationOverlay } from "@/components/orchestration-overlay";
+import { WorkspaceChat } from "@/components/workspace-chat";
+import { MessageSquare } from "lucide-react";
+
 
 const ICONS: Record<string, typeof Compass> = {
   Compass, ListChecks, Boxes, Network, Cloud, ShieldCheck, Gavel,
@@ -49,7 +53,9 @@ function WorkspacePage() {
   const [timeline, setTimeline] = useState<TimelineItem[]>([]);
   const [activeAgent, setActiveAgent] = useState<AgentKey | null>(null);
   const [selectedArtifact, setSelectedArtifact] = useState<AgentKey | null>(null);
+  const [chatOpen, setChatOpen] = useState(false);
   const streamStartedRef = useRef(false);
+
 
   const { data: fetched, isLoading } = useQuery({
     queryKey: ["project", projectId],
@@ -215,14 +221,31 @@ function WorkspacePage() {
               <Play className="h-3.5 w-3.5 mr-1.5" /> Run orchestrator
             </Button>
           )}
+          <Button
+            size="sm"
+            variant={chatOpen ? "default" : "outline"}
+            onClick={() => setChatOpen((v) => !v)}
+            className={chatOpen ? "bg-foreground text-background hover:bg-foreground/90" : ""}
+          >
+            <MessageSquare className="h-3.5 w-3.5 mr-1.5" /> Ask
+          </Button>
           {running && (
-            <div className="flex items-center gap-2 text-xs text-aether font-mono">
+            <div className="flex items-center gap-2 text-xs text-muted-foreground font-mono">
               <Loader2 className="h-3.5 w-3.5 animate-spin" />
               {activeAgent ? AGENT_BY_KEY[activeAgent].name : "planning"}
             </div>
           )}
         </div>
       </header>
+
+      <OrchestrationOverlay
+        open={running}
+        activeAgent={activeAgent}
+        timeline={timeline}
+        projectName={project.name}
+        onClose={() => setRunning(false)}
+      />
+
 
       {/* 3-column layout */}
       <div className="flex-1 grid grid-cols-[240px_1fr_480px] min-h-0">
@@ -349,42 +372,47 @@ function WorkspacePage() {
           </div>
         </section>
 
-        {/* Artifact viewer */}
-        <aside className="border-l border-border/40 min-w-0 overflow-hidden flex flex-col bg-background/60">
-          <Tabs
-            value={selectedArtifact ?? undefined}
-            onValueChange={(v) => setSelectedArtifact(v as AgentKey)}
-            className="flex-1 min-h-0 flex flex-col"
-          >
-            <div className="px-4 py-3 border-b border-border/40">
-              <div className="text-[10px] font-mono uppercase tracking-widest text-aether mb-2">Artifacts</div>
-              <TabsList className="w-full h-auto flex-wrap justify-start bg-transparent p-0 gap-1">
-                {completedArtifacts.map((t) => (
-                  <TabsTrigger key={t.key} value={t.key} className="text-[10px] px-2 py-1 h-auto data-[state=active]:bg-aether/20 data-[state=active]:text-foreground">
-                    {AGENT_BY_KEY[t.key].name.replace(" Agent", "")}
-                  </TabsTrigger>
-                ))}
-              </TabsList>
-            </div>
-            <ScrollArea className="flex-1 min-h-0">
-              {STAGE_ORDER.filter((k) => k !== "planner").map((k) => {
-                const item = runByKey[k];
-                if (!item?.output) return null;
-                return (
-                  <TabsContent key={k} value={k} className="p-4 mt-0">
-                    <ArtifactView kind={k} data={item.output} />
-                  </TabsContent>
-                );
-              })}
-              {completedArtifacts.length === 0 && (
-                <div className="p-8 text-center text-sm text-muted-foreground">
-                  Artifacts appear here as agents complete.
-                </div>
-              )}
-            </ScrollArea>
-          </Tabs>
+        {/* Right rail: artifacts or chat */}
+        <aside className="border-l border-border min-w-0 overflow-hidden flex flex-col bg-background/60">
+          {chatOpen ? (
+            <WorkspaceChat projectId={projectId} projectName={project.name} />
+          ) : (
+            <Tabs
+              value={selectedArtifact ?? undefined}
+              onValueChange={(v) => setSelectedArtifact(v as AgentKey)}
+              className="flex-1 min-h-0 flex flex-col"
+            >
+              <div className="px-4 py-3 border-b border-border">
+                <div className="text-[10px] font-mono uppercase tracking-widest text-muted-foreground mb-2">Artifacts</div>
+                <TabsList className="w-full h-auto flex-wrap justify-start bg-transparent p-0 gap-1">
+                  {completedArtifacts.map((t) => (
+                    <TabsTrigger key={t.key} value={t.key} className="text-[10px] px-2 py-1 h-auto data-[state=active]:bg-secondary data-[state=active]:text-foreground">
+                      {AGENT_BY_KEY[t.key].name.replace(" Agent", "")}
+                    </TabsTrigger>
+                  ))}
+                </TabsList>
+              </div>
+              <ScrollArea className="flex-1 min-h-0">
+                {STAGE_ORDER.filter((k) => k !== "planner").map((k) => {
+                  const item = runByKey[k];
+                  if (!item?.output) return null;
+                  return (
+                    <TabsContent key={k} value={k} className="p-4 mt-0">
+                      <ArtifactView kind={k} data={item.output} />
+                    </TabsContent>
+                  );
+                })}
+                {completedArtifacts.length === 0 && (
+                  <div className="p-8 text-center text-sm text-muted-foreground">
+                    Artifacts appear here as agents complete.
+                  </div>
+                )}
+              </ScrollArea>
+            </Tabs>
+          )}
         </aside>
       </div>
+
     </div>
   );
 }

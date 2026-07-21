@@ -12,26 +12,9 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as ChatThreadIdRouteImport } from './routes/chat.$threadId'
 import { Route as ApiChatRouteImport } from './routes/api/chat'
-import { Route as AuthenticatedWellArchitectedRouteImport } from './routes/_authenticated/well-architected'
-import { Route as AuthenticatedSimulationRouteImport } from './routes/_authenticated/simulation'
-import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticated/settings'
-import { Route as AuthenticatedOrganizationRouteImport } from './routes/_authenticated/organization'
-import { Route as AuthenticatedOperationsRouteImport } from './routes/_authenticated/operations'
 import { Route as AuthenticatedNewRouteImport } from './routes/_authenticated/new'
-import { Route as AuthenticatedMarketplaceRouteImport } from './routes/_authenticated/marketplace'
-import { Route as AuthenticatedKnowledgeRouteImport } from './routes/_authenticated/knowledge'
-import { Route as AuthenticatedIntegrationsRouteImport } from './routes/_authenticated/integrations'
-import { Route as AuthenticatedGovernanceRouteImport } from './routes/_authenticated/governance'
-import { Route as AuthenticatedFinopsRouteImport } from './routes/_authenticated/finops'
-import { Route as AuthenticatedDeploymentsRouteImport } from './routes/_authenticated/deployments'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
-import { Route as AuthenticatedComplianceRouteImport } from './routes/_authenticated/compliance'
-import { Route as AuthenticatedApprovalsRouteImport } from './routes/_authenticated/approvals'
-import { Route as AuthenticatedAgentsRouteImport } from './routes/_authenticated/agents'
-import { Route as AuthenticatedAdrsRouteImport } from './routes/_authenticated/adrs'
-import { Route as AuthenticatedActivityRouteImport } from './routes/_authenticated/activity'
 import { Route as AuthenticatedProjectsProjectIdRouteImport } from './routes/_authenticated/projects.$projectId'
 import { Route as AuthenticatedProjectsProjectIdBlueprintRouteImport } from './routes/_authenticated/projects.$projectId.blueprint'
 import { Route as AuthenticatedProjectsProjectIdAuditRouteImport } from './routes/_authenticated/projects.$projectId.audit'
@@ -51,109 +34,19 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ChatThreadIdRoute = ChatThreadIdRouteImport.update({
-  id: '/chat/$threadId',
-  path: '/chat/$threadId',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const ApiChatRoute = ApiChatRouteImport.update({
   id: '/api/chat',
   path: '/api/chat',
   getParentRoute: () => rootRouteImport,
-} as any)
-const AuthenticatedWellArchitectedRoute =
-  AuthenticatedWellArchitectedRouteImport.update({
-    id: '/well-architected',
-    path: '/well-architected',
-    getParentRoute: () => AuthenticatedRouteRoute,
-  } as any)
-const AuthenticatedSimulationRoute = AuthenticatedSimulationRouteImport.update({
-  id: '/simulation',
-  path: '/simulation',
-  getParentRoute: () => AuthenticatedRouteRoute,
-} as any)
-const AuthenticatedSettingsRoute = AuthenticatedSettingsRouteImport.update({
-  id: '/settings',
-  path: '/settings',
-  getParentRoute: () => AuthenticatedRouteRoute,
-} as any)
-const AuthenticatedOrganizationRoute =
-  AuthenticatedOrganizationRouteImport.update({
-    id: '/organization',
-    path: '/organization',
-    getParentRoute: () => AuthenticatedRouteRoute,
-  } as any)
-const AuthenticatedOperationsRoute = AuthenticatedOperationsRouteImport.update({
-  id: '/operations',
-  path: '/operations',
-  getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedNewRoute = AuthenticatedNewRouteImport.update({
   id: '/new',
   path: '/new',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
-const AuthenticatedMarketplaceRoute =
-  AuthenticatedMarketplaceRouteImport.update({
-    id: '/marketplace',
-    path: '/marketplace',
-    getParentRoute: () => AuthenticatedRouteRoute,
-  } as any)
-const AuthenticatedKnowledgeRoute = AuthenticatedKnowledgeRouteImport.update({
-  id: '/knowledge',
-  path: '/knowledge',
-  getParentRoute: () => AuthenticatedRouteRoute,
-} as any)
-const AuthenticatedIntegrationsRoute =
-  AuthenticatedIntegrationsRouteImport.update({
-    id: '/integrations',
-    path: '/integrations',
-    getParentRoute: () => AuthenticatedRouteRoute,
-  } as any)
-const AuthenticatedGovernanceRoute = AuthenticatedGovernanceRouteImport.update({
-  id: '/governance',
-  path: '/governance',
-  getParentRoute: () => AuthenticatedRouteRoute,
-} as any)
-const AuthenticatedFinopsRoute = AuthenticatedFinopsRouteImport.update({
-  id: '/finops',
-  path: '/finops',
-  getParentRoute: () => AuthenticatedRouteRoute,
-} as any)
-const AuthenticatedDeploymentsRoute =
-  AuthenticatedDeploymentsRouteImport.update({
-    id: '/deployments',
-    path: '/deployments',
-    getParentRoute: () => AuthenticatedRouteRoute,
-  } as any)
 const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
-  getParentRoute: () => AuthenticatedRouteRoute,
-} as any)
-const AuthenticatedComplianceRoute = AuthenticatedComplianceRouteImport.update({
-  id: '/compliance',
-  path: '/compliance',
-  getParentRoute: () => AuthenticatedRouteRoute,
-} as any)
-const AuthenticatedApprovalsRoute = AuthenticatedApprovalsRouteImport.update({
-  id: '/approvals',
-  path: '/approvals',
-  getParentRoute: () => AuthenticatedRouteRoute,
-} as any)
-const AuthenticatedAgentsRoute = AuthenticatedAgentsRouteImport.update({
-  id: '/agents',
-  path: '/agents',
-  getParentRoute: () => AuthenticatedRouteRoute,
-} as any)
-const AuthenticatedAdrsRoute = AuthenticatedAdrsRouteImport.update({
-  id: '/adrs',
-  path: '/adrs',
-  getParentRoute: () => AuthenticatedRouteRoute,
-} as any)
-const AuthenticatedActivityRoute = AuthenticatedActivityRouteImport.update({
-  id: '/activity',
-  path: '/activity',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedProjectsProjectIdRoute =
@@ -184,26 +77,9 @@ const AuthenticatedProjectsProjectIdArchitectureRoute =
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
-  '/activity': typeof AuthenticatedActivityRoute
-  '/adrs': typeof AuthenticatedAdrsRoute
-  '/agents': typeof AuthenticatedAgentsRoute
-  '/approvals': typeof AuthenticatedApprovalsRoute
-  '/compliance': typeof AuthenticatedComplianceRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
-  '/deployments': typeof AuthenticatedDeploymentsRoute
-  '/finops': typeof AuthenticatedFinopsRoute
-  '/governance': typeof AuthenticatedGovernanceRoute
-  '/integrations': typeof AuthenticatedIntegrationsRoute
-  '/knowledge': typeof AuthenticatedKnowledgeRoute
-  '/marketplace': typeof AuthenticatedMarketplaceRoute
   '/new': typeof AuthenticatedNewRoute
-  '/operations': typeof AuthenticatedOperationsRoute
-  '/organization': typeof AuthenticatedOrganizationRoute
-  '/settings': typeof AuthenticatedSettingsRoute
-  '/simulation': typeof AuthenticatedSimulationRoute
-  '/well-architected': typeof AuthenticatedWellArchitectedRoute
   '/api/chat': typeof ApiChatRoute
-  '/chat/$threadId': typeof ChatThreadIdRoute
   '/projects/$projectId': typeof AuthenticatedProjectsProjectIdRouteWithChildren
   '/projects/$projectId/architecture': typeof AuthenticatedProjectsProjectIdArchitectureRoute
   '/projects/$projectId/audit': typeof AuthenticatedProjectsProjectIdAuditRoute
@@ -212,26 +88,9 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
-  '/activity': typeof AuthenticatedActivityRoute
-  '/adrs': typeof AuthenticatedAdrsRoute
-  '/agents': typeof AuthenticatedAgentsRoute
-  '/approvals': typeof AuthenticatedApprovalsRoute
-  '/compliance': typeof AuthenticatedComplianceRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
-  '/deployments': typeof AuthenticatedDeploymentsRoute
-  '/finops': typeof AuthenticatedFinopsRoute
-  '/governance': typeof AuthenticatedGovernanceRoute
-  '/integrations': typeof AuthenticatedIntegrationsRoute
-  '/knowledge': typeof AuthenticatedKnowledgeRoute
-  '/marketplace': typeof AuthenticatedMarketplaceRoute
   '/new': typeof AuthenticatedNewRoute
-  '/operations': typeof AuthenticatedOperationsRoute
-  '/organization': typeof AuthenticatedOrganizationRoute
-  '/settings': typeof AuthenticatedSettingsRoute
-  '/simulation': typeof AuthenticatedSimulationRoute
-  '/well-architected': typeof AuthenticatedWellArchitectedRoute
   '/api/chat': typeof ApiChatRoute
-  '/chat/$threadId': typeof ChatThreadIdRoute
   '/projects/$projectId': typeof AuthenticatedProjectsProjectIdRouteWithChildren
   '/projects/$projectId/architecture': typeof AuthenticatedProjectsProjectIdArchitectureRoute
   '/projects/$projectId/audit': typeof AuthenticatedProjectsProjectIdAuditRoute
@@ -242,26 +101,9 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/auth': typeof AuthRoute
-  '/_authenticated/activity': typeof AuthenticatedActivityRoute
-  '/_authenticated/adrs': typeof AuthenticatedAdrsRoute
-  '/_authenticated/agents': typeof AuthenticatedAgentsRoute
-  '/_authenticated/approvals': typeof AuthenticatedApprovalsRoute
-  '/_authenticated/compliance': typeof AuthenticatedComplianceRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
-  '/_authenticated/deployments': typeof AuthenticatedDeploymentsRoute
-  '/_authenticated/finops': typeof AuthenticatedFinopsRoute
-  '/_authenticated/governance': typeof AuthenticatedGovernanceRoute
-  '/_authenticated/integrations': typeof AuthenticatedIntegrationsRoute
-  '/_authenticated/knowledge': typeof AuthenticatedKnowledgeRoute
-  '/_authenticated/marketplace': typeof AuthenticatedMarketplaceRoute
   '/_authenticated/new': typeof AuthenticatedNewRoute
-  '/_authenticated/operations': typeof AuthenticatedOperationsRoute
-  '/_authenticated/organization': typeof AuthenticatedOrganizationRoute
-  '/_authenticated/settings': typeof AuthenticatedSettingsRoute
-  '/_authenticated/simulation': typeof AuthenticatedSimulationRoute
-  '/_authenticated/well-architected': typeof AuthenticatedWellArchitectedRoute
   '/api/chat': typeof ApiChatRoute
-  '/chat/$threadId': typeof ChatThreadIdRoute
   '/_authenticated/projects/$projectId': typeof AuthenticatedProjectsProjectIdRouteWithChildren
   '/_authenticated/projects/$projectId/architecture': typeof AuthenticatedProjectsProjectIdArchitectureRoute
   '/_authenticated/projects/$projectId/audit': typeof AuthenticatedProjectsProjectIdAuditRoute
@@ -272,26 +114,9 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/auth'
-    | '/activity'
-    | '/adrs'
-    | '/agents'
-    | '/approvals'
-    | '/compliance'
     | '/dashboard'
-    | '/deployments'
-    | '/finops'
-    | '/governance'
-    | '/integrations'
-    | '/knowledge'
-    | '/marketplace'
     | '/new'
-    | '/operations'
-    | '/organization'
-    | '/settings'
-    | '/simulation'
-    | '/well-architected'
     | '/api/chat'
-    | '/chat/$threadId'
     | '/projects/$projectId'
     | '/projects/$projectId/architecture'
     | '/projects/$projectId/audit'
@@ -300,26 +125,9 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/auth'
-    | '/activity'
-    | '/adrs'
-    | '/agents'
-    | '/approvals'
-    | '/compliance'
     | '/dashboard'
-    | '/deployments'
-    | '/finops'
-    | '/governance'
-    | '/integrations'
-    | '/knowledge'
-    | '/marketplace'
     | '/new'
-    | '/operations'
-    | '/organization'
-    | '/settings'
-    | '/simulation'
-    | '/well-architected'
     | '/api/chat'
-    | '/chat/$threadId'
     | '/projects/$projectId'
     | '/projects/$projectId/architecture'
     | '/projects/$projectId/audit'
@@ -329,26 +137,9 @@ export interface FileRouteTypes {
     | '/'
     | '/_authenticated'
     | '/auth'
-    | '/_authenticated/activity'
-    | '/_authenticated/adrs'
-    | '/_authenticated/agents'
-    | '/_authenticated/approvals'
-    | '/_authenticated/compliance'
     | '/_authenticated/dashboard'
-    | '/_authenticated/deployments'
-    | '/_authenticated/finops'
-    | '/_authenticated/governance'
-    | '/_authenticated/integrations'
-    | '/_authenticated/knowledge'
-    | '/_authenticated/marketplace'
     | '/_authenticated/new'
-    | '/_authenticated/operations'
-    | '/_authenticated/organization'
-    | '/_authenticated/settings'
-    | '/_authenticated/simulation'
-    | '/_authenticated/well-architected'
     | '/api/chat'
-    | '/chat/$threadId'
     | '/_authenticated/projects/$projectId'
     | '/_authenticated/projects/$projectId/architecture'
     | '/_authenticated/projects/$projectId/audit'
@@ -360,7 +151,6 @@ export interface RootRouteChildren {
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AuthRoute: typeof AuthRoute
   ApiChatRoute: typeof ApiChatRoute
-  ChatThreadIdRoute: typeof ChatThreadIdRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -386,54 +176,12 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/chat/$threadId': {
-      id: '/chat/$threadId'
-      path: '/chat/$threadId'
-      fullPath: '/chat/$threadId'
-      preLoaderRoute: typeof ChatThreadIdRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/api/chat': {
       id: '/api/chat'
       path: '/api/chat'
       fullPath: '/api/chat'
       preLoaderRoute: typeof ApiChatRouteImport
       parentRoute: typeof rootRouteImport
-    }
-    '/_authenticated/well-architected': {
-      id: '/_authenticated/well-architected'
-      path: '/well-architected'
-      fullPath: '/well-architected'
-      preLoaderRoute: typeof AuthenticatedWellArchitectedRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
-    }
-    '/_authenticated/simulation': {
-      id: '/_authenticated/simulation'
-      path: '/simulation'
-      fullPath: '/simulation'
-      preLoaderRoute: typeof AuthenticatedSimulationRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
-    }
-    '/_authenticated/settings': {
-      id: '/_authenticated/settings'
-      path: '/settings'
-      fullPath: '/settings'
-      preLoaderRoute: typeof AuthenticatedSettingsRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
-    }
-    '/_authenticated/organization': {
-      id: '/_authenticated/organization'
-      path: '/organization'
-      fullPath: '/organization'
-      preLoaderRoute: typeof AuthenticatedOrganizationRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
-    }
-    '/_authenticated/operations': {
-      id: '/_authenticated/operations'
-      path: '/operations'
-      fullPath: '/operations'
-      preLoaderRoute: typeof AuthenticatedOperationsRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/new': {
       id: '/_authenticated/new'
@@ -442,88 +190,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedNewRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
-    '/_authenticated/marketplace': {
-      id: '/_authenticated/marketplace'
-      path: '/marketplace'
-      fullPath: '/marketplace'
-      preLoaderRoute: typeof AuthenticatedMarketplaceRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
-    }
-    '/_authenticated/knowledge': {
-      id: '/_authenticated/knowledge'
-      path: '/knowledge'
-      fullPath: '/knowledge'
-      preLoaderRoute: typeof AuthenticatedKnowledgeRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
-    }
-    '/_authenticated/integrations': {
-      id: '/_authenticated/integrations'
-      path: '/integrations'
-      fullPath: '/integrations'
-      preLoaderRoute: typeof AuthenticatedIntegrationsRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
-    }
-    '/_authenticated/governance': {
-      id: '/_authenticated/governance'
-      path: '/governance'
-      fullPath: '/governance'
-      preLoaderRoute: typeof AuthenticatedGovernanceRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
-    }
-    '/_authenticated/finops': {
-      id: '/_authenticated/finops'
-      path: '/finops'
-      fullPath: '/finops'
-      preLoaderRoute: typeof AuthenticatedFinopsRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
-    }
-    '/_authenticated/deployments': {
-      id: '/_authenticated/deployments'
-      path: '/deployments'
-      fullPath: '/deployments'
-      preLoaderRoute: typeof AuthenticatedDeploymentsRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
-    }
     '/_authenticated/dashboard': {
       id: '/_authenticated/dashboard'
       path: '/dashboard'
       fullPath: '/dashboard'
       preLoaderRoute: typeof AuthenticatedDashboardRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
-    }
-    '/_authenticated/compliance': {
-      id: '/_authenticated/compliance'
-      path: '/compliance'
-      fullPath: '/compliance'
-      preLoaderRoute: typeof AuthenticatedComplianceRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
-    }
-    '/_authenticated/approvals': {
-      id: '/_authenticated/approvals'
-      path: '/approvals'
-      fullPath: '/approvals'
-      preLoaderRoute: typeof AuthenticatedApprovalsRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
-    }
-    '/_authenticated/agents': {
-      id: '/_authenticated/agents'
-      path: '/agents'
-      fullPath: '/agents'
-      preLoaderRoute: typeof AuthenticatedAgentsRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
-    }
-    '/_authenticated/adrs': {
-      id: '/_authenticated/adrs'
-      path: '/adrs'
-      fullPath: '/adrs'
-      preLoaderRoute: typeof AuthenticatedAdrsRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
-    }
-    '/_authenticated/activity': {
-      id: '/_authenticated/activity'
-      path: '/activity'
-      fullPath: '/activity'
-      preLoaderRoute: typeof AuthenticatedActivityRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/projects/$projectId': {
@@ -579,46 +250,14 @@ const AuthenticatedProjectsProjectIdRouteWithChildren =
   )
 
 interface AuthenticatedRouteRouteChildren {
-  AuthenticatedActivityRoute: typeof AuthenticatedActivityRoute
-  AuthenticatedAdrsRoute: typeof AuthenticatedAdrsRoute
-  AuthenticatedAgentsRoute: typeof AuthenticatedAgentsRoute
-  AuthenticatedApprovalsRoute: typeof AuthenticatedApprovalsRoute
-  AuthenticatedComplianceRoute: typeof AuthenticatedComplianceRoute
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
-  AuthenticatedDeploymentsRoute: typeof AuthenticatedDeploymentsRoute
-  AuthenticatedFinopsRoute: typeof AuthenticatedFinopsRoute
-  AuthenticatedGovernanceRoute: typeof AuthenticatedGovernanceRoute
-  AuthenticatedIntegrationsRoute: typeof AuthenticatedIntegrationsRoute
-  AuthenticatedKnowledgeRoute: typeof AuthenticatedKnowledgeRoute
-  AuthenticatedMarketplaceRoute: typeof AuthenticatedMarketplaceRoute
   AuthenticatedNewRoute: typeof AuthenticatedNewRoute
-  AuthenticatedOperationsRoute: typeof AuthenticatedOperationsRoute
-  AuthenticatedOrganizationRoute: typeof AuthenticatedOrganizationRoute
-  AuthenticatedSettingsRoute: typeof AuthenticatedSettingsRoute
-  AuthenticatedSimulationRoute: typeof AuthenticatedSimulationRoute
-  AuthenticatedWellArchitectedRoute: typeof AuthenticatedWellArchitectedRoute
   AuthenticatedProjectsProjectIdRoute: typeof AuthenticatedProjectsProjectIdRouteWithChildren
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
-  AuthenticatedActivityRoute: AuthenticatedActivityRoute,
-  AuthenticatedAdrsRoute: AuthenticatedAdrsRoute,
-  AuthenticatedAgentsRoute: AuthenticatedAgentsRoute,
-  AuthenticatedApprovalsRoute: AuthenticatedApprovalsRoute,
-  AuthenticatedComplianceRoute: AuthenticatedComplianceRoute,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
-  AuthenticatedDeploymentsRoute: AuthenticatedDeploymentsRoute,
-  AuthenticatedFinopsRoute: AuthenticatedFinopsRoute,
-  AuthenticatedGovernanceRoute: AuthenticatedGovernanceRoute,
-  AuthenticatedIntegrationsRoute: AuthenticatedIntegrationsRoute,
-  AuthenticatedKnowledgeRoute: AuthenticatedKnowledgeRoute,
-  AuthenticatedMarketplaceRoute: AuthenticatedMarketplaceRoute,
   AuthenticatedNewRoute: AuthenticatedNewRoute,
-  AuthenticatedOperationsRoute: AuthenticatedOperationsRoute,
-  AuthenticatedOrganizationRoute: AuthenticatedOrganizationRoute,
-  AuthenticatedSettingsRoute: AuthenticatedSettingsRoute,
-  AuthenticatedSimulationRoute: AuthenticatedSimulationRoute,
-  AuthenticatedWellArchitectedRoute: AuthenticatedWellArchitectedRoute,
   AuthenticatedProjectsProjectIdRoute:
     AuthenticatedProjectsProjectIdRouteWithChildren,
 }
@@ -631,7 +270,6 @@ const rootRouteChildren: RootRouteChildren = {
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AuthRoute: AuthRoute,
   ApiChatRoute: ApiChatRoute,
-  ChatThreadIdRoute: ChatThreadIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
