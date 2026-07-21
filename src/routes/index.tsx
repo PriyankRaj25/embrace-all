@@ -11,7 +11,7 @@ export const Route = createFileRoute("/")({
       { title: "AetherOS — AI operating system for enterprise engineering" },
       { name: "description", content: "Describe a system in plain English. Twelve AI agents design, govern, and generate a production-ready cloud blueprint in minutes." },
       { property: "og:title", content: "AetherOS — AI operating system for enterprise engineering" },
-      { property: "og:description", content: "Multi-agent AI designs, governs, and generates enterprise cloud architectures from natural language." },
+      { property: "og:description", content: "Describe a system in plain English. Twelve AI agents design, govern, and generate a production-ready cloud blueprint in minutes." },
     ],
   }),
   component: Landing,
