@@ -53,7 +53,9 @@ function WorkspacePage() {
   const [timeline, setTimeline] = useState<TimelineItem[]>([]);
   const [activeAgent, setActiveAgent] = useState<AgentKey | null>(null);
   const [selectedArtifact, setSelectedArtifact] = useState<AgentKey | null>(null);
+  const [chatOpen, setChatOpen] = useState(false);
   const streamStartedRef = useRef(false);
+
 
   const { data: fetched, isLoading } = useQuery({
     queryKey: ["project", projectId],
