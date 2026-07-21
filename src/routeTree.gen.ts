@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ChatThreadIdRouteImport } from './routes/chat.$threadId'
 import { Route as ApiChatRouteImport } from './routes/api/chat'
 import { Route as AuthenticatedWellArchitectedRouteImport } from './routes/_authenticated/well-architected'
 import { Route as AuthenticatedSimulationRouteImport } from './routes/_authenticated/simulation'
@@ -48,6 +49,11 @@ const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ChatThreadIdRoute = ChatThreadIdRouteImport.update({
+  id: '/chat/$threadId',
+  path: '/chat/$threadId',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiChatRoute = ApiChatRouteImport.update({
@@ -197,6 +203,7 @@ export interface FileRoutesByFullPath {
   '/simulation': typeof AuthenticatedSimulationRoute
   '/well-architected': typeof AuthenticatedWellArchitectedRoute
   '/api/chat': typeof ApiChatRoute
+  '/chat/$threadId': typeof ChatThreadIdRoute
   '/projects/$projectId': typeof AuthenticatedProjectsProjectIdRouteWithChildren
   '/projects/$projectId/architecture': typeof AuthenticatedProjectsProjectIdArchitectureRoute
   '/projects/$projectId/audit': typeof AuthenticatedProjectsProjectIdAuditRoute
@@ -224,6 +231,7 @@ export interface FileRoutesByTo {
   '/simulation': typeof AuthenticatedSimulationRoute
   '/well-architected': typeof AuthenticatedWellArchitectedRoute
   '/api/chat': typeof ApiChatRoute
+  '/chat/$threadId': typeof ChatThreadIdRoute
   '/projects/$projectId': typeof AuthenticatedProjectsProjectIdRouteWithChildren
   '/projects/$projectId/architecture': typeof AuthenticatedProjectsProjectIdArchitectureRoute
   '/projects/$projectId/audit': typeof AuthenticatedProjectsProjectIdAuditRoute
@@ -253,6 +261,7 @@ export interface FileRoutesById {
   '/_authenticated/simulation': typeof AuthenticatedSimulationRoute
   '/_authenticated/well-architected': typeof AuthenticatedWellArchitectedRoute
   '/api/chat': typeof ApiChatRoute
+  '/chat/$threadId': typeof ChatThreadIdRoute
   '/_authenticated/projects/$projectId': typeof AuthenticatedProjectsProjectIdRouteWithChildren
   '/_authenticated/projects/$projectId/architecture': typeof AuthenticatedProjectsProjectIdArchitectureRoute
   '/_authenticated/projects/$projectId/audit': typeof AuthenticatedProjectsProjectIdAuditRoute
@@ -282,6 +291,7 @@ export interface FileRouteTypes {
     | '/simulation'
     | '/well-architected'
     | '/api/chat'
+    | '/chat/$threadId'
     | '/projects/$projectId'
     | '/projects/$projectId/architecture'
     | '/projects/$projectId/audit'
@@ -309,6 +319,7 @@ export interface FileRouteTypes {
     | '/simulation'
     | '/well-architected'
     | '/api/chat'
+    | '/chat/$threadId'
     | '/projects/$projectId'
     | '/projects/$projectId/architecture'
     | '/projects/$projectId/audit'
@@ -337,6 +348,7 @@ export interface FileRouteTypes {
     | '/_authenticated/simulation'
     | '/_authenticated/well-architected'
     | '/api/chat'
+    | '/chat/$threadId'
     | '/_authenticated/projects/$projectId'
     | '/_authenticated/projects/$projectId/architecture'
     | '/_authenticated/projects/$projectId/audit'
@@ -348,6 +360,7 @@ export interface RootRouteChildren {
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AuthRoute: typeof AuthRoute
   ApiChatRoute: typeof ApiChatRoute
+  ChatThreadIdRoute: typeof ChatThreadIdRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -371,6 +384,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/chat/$threadId': {
+      id: '/chat/$threadId'
+      path: '/chat/$threadId'
+      fullPath: '/chat/$threadId'
+      preLoaderRoute: typeof ChatThreadIdRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/chat': {
@@ -611,17 +631,8 @@ const rootRouteChildren: RootRouteChildren = {
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AuthRoute: AuthRoute,
   ApiChatRoute: ApiChatRoute,
+  ChatThreadIdRoute: ChatThreadIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}

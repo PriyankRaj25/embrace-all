@@ -17,7 +17,7 @@ import {
   CheckCircle2, Circle, XCircle, ChevronRight, FileText, ArrowLeft, Workflow,
 } from "lucide-react";
 import { ArtifactView } from "@/components/artifact-view";
-import { DEMO_PROJECT_ID, demoProject, demoRuns, demoApprovals } from "@/lib/demo-blueprint";
+import { DEMO_PROJECT_ID, demoProject, demoRuns, demoApprovals, demoArtifacts } from "@/lib/demo-blueprint";
 
 const ICONS: Record<string, typeof Compass> = {
   Compass, ListChecks, Boxes, Network, Cloud, ShieldCheck, Gavel,
@@ -58,7 +58,7 @@ function WorkspacePage() {
   });
   const data = isDemo
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    ? ({ project: demoProject as any, runs: demoRuns as any, artifacts: [], approvals: demoApprovals as any })
+    ? ({ project: demoProject as any, runs: demoRuns as any, artifacts: Object.entries(demoArtifacts).map(([kind, output]) => ({ kind, data: output })), approvals: demoApprovals as any })
     : fetched;
 
   // Seed timeline from persisted runs

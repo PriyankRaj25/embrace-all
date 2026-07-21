@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { createClient } from "@supabase/supabase-js";
-import { generateObject } from "ai";
+import { convertToModelMessages, generateObject, streamText, type UIMessage } from "ai";
 import {
   AGENT_BY_KEY,
   AGENT_PROMPTS,
@@ -39,10 +39,27 @@ export const Route = createFileRoute("/api/chat")({
   server: {
     handlers: {
       POST: async ({ request }) => {
+        const body = (await request.json()) as { projectId?: string; messages?: unknown };
+
+        if (Array.isArray(body.messages)) {
+          const apiKey = process.env.LOVABLE_API_KEY;
+          if (!apiKey) return new Response("Missing LOVABLE_API_KEY", { status: 500 });
+
+          const gateway = createLovableAiGatewayProvider(apiKey);
+          const result = streamText({
+            model: gateway("openai/gpt-5.5"),
+            system:
+              "You are AetherOS, an AI operating system for enterprise engineering. Help users design, review, and explain production cloud architectures. Be concise, structured, investor-demo-ready, and practical. When useful, organize answers as architecture, data flow, security, compliance, reliability, FinOps, and implementation plan.",
+            messages: await convertToModelMessages(body.messages as UIMessage[]),
+          });
+
+          return result.toUIMessageStreamResponse({ originalMessages: body.messages as UIMessage[] });
+        }
+
         const session = await validateBearer(request);
         if (!session) return new Response("Unauthorized", { status: 401 });
 
-        const { projectId } = (await request.json()) as { projectId: string };
+        const { projectId } = body as { projectId?: string };
         if (!projectId) return new Response("Missing projectId", { status: 400 });
 
         // Load project (RLS enforces ownership)
