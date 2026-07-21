@@ -18,6 +18,9 @@ import { Route as AuthenticatedNewRouteImport } from './routes/_authenticated/ne
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedProjectsProjectIdRouteImport } from './routes/_authenticated/projects.$projectId'
 import { Route as AuthenticatedProjectsProjectIdIndexRouteImport } from './routes/_authenticated/projects.$projectId.index'
+import { Route as LovableEmailTransactionalPreviewRouteImport } from './routes/lovable/email/transactional/preview'
+import { Route as LovableEmailAuthWebhookRouteImport } from './routes/lovable/email/auth/webhook'
+import { Route as LovableEmailAuthPreviewRouteImport } from './routes/lovable/email/auth/preview'
 import { Route as AuthenticatedProjectsProjectIdBlueprintRouteImport } from './routes/_authenticated/projects.$projectId.blueprint'
 import { Route as AuthenticatedProjectsProjectIdAuditRouteImport } from './routes/_authenticated/projects.$projectId.audit'
 import { Route as AuthenticatedProjectsProjectIdArchitectureRouteImport } from './routes/_authenticated/projects.$projectId.architecture'
@@ -68,6 +71,22 @@ const AuthenticatedProjectsProjectIdIndexRoute =
     path: '/',
     getParentRoute: () => AuthenticatedProjectsProjectIdRoute,
   } as any)
+const LovableEmailTransactionalPreviewRoute =
+  LovableEmailTransactionalPreviewRouteImport.update({
+    id: '/lovable/email/transactional/preview',
+    path: '/lovable/email/transactional/preview',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const LovableEmailAuthWebhookRoute = LovableEmailAuthWebhookRouteImport.update({
+  id: '/lovable/email/auth/webhook',
+  path: '/lovable/email/auth/webhook',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LovableEmailAuthPreviewRoute = LovableEmailAuthPreviewRouteImport.update({
+  id: '/lovable/email/auth/preview',
+  path: '/lovable/email/auth/preview',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AuthenticatedProjectsProjectIdBlueprintRoute =
   AuthenticatedProjectsProjectIdBlueprintRouteImport.update({
     id: '/blueprint',
@@ -98,6 +117,9 @@ export interface FileRoutesByFullPath {
   '/projects/$projectId/architecture': typeof AuthenticatedProjectsProjectIdArchitectureRoute
   '/projects/$projectId/audit': typeof AuthenticatedProjectsProjectIdAuditRoute
   '/projects/$projectId/blueprint': typeof AuthenticatedProjectsProjectIdBlueprintRoute
+  '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
+  '/lovable/email/auth/webhook': typeof LovableEmailAuthWebhookRoute
+  '/lovable/email/transactional/preview': typeof LovableEmailTransactionalPreviewRoute
   '/projects/$projectId/': typeof AuthenticatedProjectsProjectIdIndexRoute
 }
 export interface FileRoutesByTo {
@@ -110,6 +132,9 @@ export interface FileRoutesByTo {
   '/projects/$projectId/architecture': typeof AuthenticatedProjectsProjectIdArchitectureRoute
   '/projects/$projectId/audit': typeof AuthenticatedProjectsProjectIdAuditRoute
   '/projects/$projectId/blueprint': typeof AuthenticatedProjectsProjectIdBlueprintRoute
+  '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
+  '/lovable/email/auth/webhook': typeof LovableEmailAuthWebhookRoute
+  '/lovable/email/transactional/preview': typeof LovableEmailTransactionalPreviewRoute
   '/projects/$projectId': typeof AuthenticatedProjectsProjectIdIndexRoute
 }
 export interface FileRoutesById {
@@ -125,6 +150,9 @@ export interface FileRoutesById {
   '/_authenticated/projects/$projectId/architecture': typeof AuthenticatedProjectsProjectIdArchitectureRoute
   '/_authenticated/projects/$projectId/audit': typeof AuthenticatedProjectsProjectIdAuditRoute
   '/_authenticated/projects/$projectId/blueprint': typeof AuthenticatedProjectsProjectIdBlueprintRoute
+  '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
+  '/lovable/email/auth/webhook': typeof LovableEmailAuthWebhookRoute
+  '/lovable/email/transactional/preview': typeof LovableEmailTransactionalPreviewRoute
   '/_authenticated/projects/$projectId/': typeof AuthenticatedProjectsProjectIdIndexRoute
 }
 export interface FileRouteTypes {
@@ -140,6 +168,9 @@ export interface FileRouteTypes {
     | '/projects/$projectId/architecture'
     | '/projects/$projectId/audit'
     | '/projects/$projectId/blueprint'
+    | '/lovable/email/auth/preview'
+    | '/lovable/email/auth/webhook'
+    | '/lovable/email/transactional/preview'
     | '/projects/$projectId/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -152,6 +183,9 @@ export interface FileRouteTypes {
     | '/projects/$projectId/architecture'
     | '/projects/$projectId/audit'
     | '/projects/$projectId/blueprint'
+    | '/lovable/email/auth/preview'
+    | '/lovable/email/auth/webhook'
+    | '/lovable/email/transactional/preview'
     | '/projects/$projectId'
   id:
     | '__root__'
@@ -166,6 +200,9 @@ export interface FileRouteTypes {
     | '/_authenticated/projects/$projectId/architecture'
     | '/_authenticated/projects/$projectId/audit'
     | '/_authenticated/projects/$projectId/blueprint'
+    | '/lovable/email/auth/preview'
+    | '/lovable/email/auth/webhook'
+    | '/lovable/email/transactional/preview'
     | '/_authenticated/projects/$projectId/'
   fileRoutesById: FileRoutesById
 }
@@ -174,6 +211,9 @@ export interface RootRouteChildren {
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AuthRoute: typeof AuthRoute
   ApiChatRoute: typeof ApiChatRoute
+  LovableEmailAuthPreviewRoute: typeof LovableEmailAuthPreviewRoute
+  LovableEmailAuthWebhookRoute: typeof LovableEmailAuthWebhookRoute
+  LovableEmailTransactionalPreviewRoute: typeof LovableEmailTransactionalPreviewRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -240,6 +280,27 @@ declare module '@tanstack/react-router' {
       fullPath: '/projects/$projectId/'
       preLoaderRoute: typeof AuthenticatedProjectsProjectIdIndexRouteImport
       parentRoute: typeof AuthenticatedProjectsProjectIdRoute
+    }
+    '/lovable/email/transactional/preview': {
+      id: '/lovable/email/transactional/preview'
+      path: '/lovable/email/transactional/preview'
+      fullPath: '/lovable/email/transactional/preview'
+      preLoaderRoute: typeof LovableEmailTransactionalPreviewRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/lovable/email/auth/webhook': {
+      id: '/lovable/email/auth/webhook'
+      path: '/lovable/email/auth/webhook'
+      fullPath: '/lovable/email/auth/webhook'
+      preLoaderRoute: typeof LovableEmailAuthWebhookRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/lovable/email/auth/preview': {
+      id: '/lovable/email/auth/preview'
+      path: '/lovable/email/auth/preview'
+      fullPath: '/lovable/email/auth/preview'
+      preLoaderRoute: typeof LovableEmailAuthPreviewRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/_authenticated/projects/$projectId/blueprint': {
       id: '/_authenticated/projects/$projectId/blueprint'
@@ -312,17 +373,10 @@ const rootRouteChildren: RootRouteChildren = {
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AuthRoute: AuthRoute,
   ApiChatRoute: ApiChatRoute,
+  LovableEmailAuthPreviewRoute: LovableEmailAuthPreviewRoute,
+  LovableEmailAuthWebhookRoute: LovableEmailAuthWebhookRoute,
+  LovableEmailTransactionalPreviewRoute: LovableEmailTransactionalPreviewRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
