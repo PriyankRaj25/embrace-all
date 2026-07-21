@@ -262,22 +262,22 @@ function WorkspacePage() {
               <button
                 key={a.key}
                 onClick={() => run?.status === "completed" && setSelectedArtifact(a.key)}
-                className={`w-full text-left rounded-md p-2 flex items-start gap-2.5 transition ${
-                  selectedArtifact === a.key ? "bg-sidebar-accent" : "hover:bg-sidebar-accent/60"
+                className={`w-full text-left rounded-lg p-1.5 flex items-center gap-2 transition ${
+                  selectedArtifact === a.key ? "neumorph-sm" : "hover:bg-sidebar-accent/40"
                 }`}
               >
-                <div className={`rounded-md p-1.5 mt-0.5 ring-1 ${
-                  isActive ? "bg-aether/30 ring-aether pulse-ring" :
-                  status === "completed" ? "bg-success/20 ring-success/40" :
-                  status === "failed" ? "bg-destructive/20 ring-destructive/40" :
-                  "bg-secondary ring-border"
+                <div className={`rounded-md p-1 ring-1 ${
+                  isActive ? "bg-foreground/10 ring-foreground/40 pulse-ring" :
+                  status === "completed" ? "bg-success/15 ring-success/30" :
+                  status === "failed" ? "bg-destructive/15 ring-destructive/30" :
+                  "bg-secondary/40 ring-border/50"
                 }`}>
-                  <Icon className="h-3.5 w-3.5" />
+                  <Icon className="h-3 w-3" />
                 </div>
                 <div className="min-w-0 flex-1">
-                  <div className="text-xs font-medium truncate">{a.name}</div>
-                  <div className="text-[10px] font-mono uppercase text-muted-foreground">
-                    {status === "running" ? "thinking…" : status}
+                  <div className="text-[11px] font-medium truncate leading-tight">{a.name.replace(" Agent","")}</div>
+                  <div className="text-[9px] font-mono uppercase text-muted-foreground/70 leading-tight">
+                    {status === "running" ? "thinking" : status}
                   </div>
                 </div>
                 <StatusIcon status={status} />
@@ -288,10 +288,11 @@ function WorkspacePage() {
 
         {/* Timeline */}
         <section className="min-w-0 overflow-hidden flex flex-col">
-          <div className="px-6 py-4 border-b border-border/40 flex items-center gap-2">
-            <div className="text-[10px] font-mono uppercase tracking-widest text-aether">Engineering Timeline</div>
-            {running && <span className="ml-2 text-[10px] font-mono text-muted-foreground animate-pulse">live</span>}
+          <div className="px-5 py-2.5 border-b border-border/40 flex items-center gap-2 glass-subtle">
+            <div className="text-[9px] font-mono uppercase tracking-widest text-muted-foreground">Engineering Timeline</div>
+            {running && <span className="ml-1 text-[9px] font-mono text-muted-foreground animate-pulse">● live</span>}
           </div>
+
           <ScrollArea className="flex-1">
             <div className="p-6 space-y-3">
               <AnimatePresence>
