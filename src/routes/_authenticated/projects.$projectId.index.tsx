@@ -39,7 +39,7 @@ interface TimelineItem {
   at: string;
 }
 
-export const Route = createFileRoute("/_authenticated/projects/$projectId")({
+export const Route = createFileRoute("/_authenticated/projects/$projectId/")({
   component: WorkspacePage,
 });
 
