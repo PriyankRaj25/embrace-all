@@ -5,7 +5,7 @@ import { FileCode2, Cloud, Cpu, FileImage, Sparkles, ShieldCheck, ArrowRight } f
 import { Button } from "@/components/ui/button";
 
 export const Route = createFileRoute("/_authenticated/security/threat-model")({
-  component: ThreatModel;
+  component: ThreatModel,
 });
 
 const SOURCES = [
