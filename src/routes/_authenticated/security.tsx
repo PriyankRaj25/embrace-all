@@ -38,7 +38,7 @@ function SecurityLayout() {
         </div>
         <nav className="flex items-center gap-1 px-4 overflow-x-auto">
           {TABS.map((t) => {
-            const active = t.exact ? pathname === t.to : pathname.startsWith(t.to);
+            const active = "exact" in t && t.exact ? pathname === t.to : pathname.startsWith(t.to);
             const Icon = t.icon;
             return (
               <Link

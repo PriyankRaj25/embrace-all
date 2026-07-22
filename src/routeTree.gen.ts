@@ -14,8 +14,17 @@ import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ApiChatRouteImport } from './routes/api/chat'
 import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticated/settings'
+import { Route as AuthenticatedSecurityRouteImport } from './routes/_authenticated/security'
 import { Route as AuthenticatedNewRouteImport } from './routes/_authenticated/new'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
+import { Route as AuthenticatedSecurityIndexRouteImport } from './routes/_authenticated/security.index'
+import { Route as AuthenticatedSecurityZeroTrustRouteImport } from './routes/_authenticated/security.zero-trust'
+import { Route as AuthenticatedSecurityThreatModelRouteImport } from './routes/_authenticated/security.threat-model'
+import { Route as AuthenticatedSecurityRedTeamRouteImport } from './routes/_authenticated/security.red-team'
+import { Route as AuthenticatedSecurityKnowledgeGraphRouteImport } from './routes/_authenticated/security.knowledge-graph'
+import { Route as AuthenticatedSecurityFixEngineRouteImport } from './routes/_authenticated/security.fix-engine'
+import { Route as AuthenticatedSecurityComplianceRouteImport } from './routes/_authenticated/security.compliance'
+import { Route as AuthenticatedSecurityAttackPathsRouteImport } from './routes/_authenticated/security.attack-paths'
 import { Route as AuthenticatedProjectsProjectIdRouteImport } from './routes/_authenticated/projects.$projectId'
 import { Route as AuthenticatedProjectsProjectIdIndexRouteImport } from './routes/_authenticated/projects.$projectId.index'
 import { Route as LovableEmailTransactionalPreviewRouteImport } from './routes/lovable/email/transactional/preview'
@@ -49,6 +58,11 @@ const AuthenticatedSettingsRoute = AuthenticatedSettingsRouteImport.update({
   path: '/settings',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedSecurityRoute = AuthenticatedSecurityRouteImport.update({
+  id: '/security',
+  path: '/security',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedNewRoute = AuthenticatedNewRouteImport.update({
   id: '/new',
   path: '/new',
@@ -59,6 +73,54 @@ const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
   path: '/dashboard',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedSecurityIndexRoute =
+  AuthenticatedSecurityIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => AuthenticatedSecurityRoute,
+  } as any)
+const AuthenticatedSecurityZeroTrustRoute =
+  AuthenticatedSecurityZeroTrustRouteImport.update({
+    id: '/zero-trust',
+    path: '/zero-trust',
+    getParentRoute: () => AuthenticatedSecurityRoute,
+  } as any)
+const AuthenticatedSecurityThreatModelRoute =
+  AuthenticatedSecurityThreatModelRouteImport.update({
+    id: '/threat-model',
+    path: '/threat-model',
+    getParentRoute: () => AuthenticatedSecurityRoute,
+  } as any)
+const AuthenticatedSecurityRedTeamRoute =
+  AuthenticatedSecurityRedTeamRouteImport.update({
+    id: '/red-team',
+    path: '/red-team',
+    getParentRoute: () => AuthenticatedSecurityRoute,
+  } as any)
+const AuthenticatedSecurityKnowledgeGraphRoute =
+  AuthenticatedSecurityKnowledgeGraphRouteImport.update({
+    id: '/knowledge-graph',
+    path: '/knowledge-graph',
+    getParentRoute: () => AuthenticatedSecurityRoute,
+  } as any)
+const AuthenticatedSecurityFixEngineRoute =
+  AuthenticatedSecurityFixEngineRouteImport.update({
+    id: '/fix-engine',
+    path: '/fix-engine',
+    getParentRoute: () => AuthenticatedSecurityRoute,
+  } as any)
+const AuthenticatedSecurityComplianceRoute =
+  AuthenticatedSecurityComplianceRouteImport.update({
+    id: '/compliance',
+    path: '/compliance',
+    getParentRoute: () => AuthenticatedSecurityRoute,
+  } as any)
+const AuthenticatedSecurityAttackPathsRoute =
+  AuthenticatedSecurityAttackPathsRouteImport.update({
+    id: '/attack-paths',
+    path: '/attack-paths',
+    getParentRoute: () => AuthenticatedSecurityRoute,
+  } as any)
 const AuthenticatedProjectsProjectIdRoute =
   AuthenticatedProjectsProjectIdRouteImport.update({
     id: '/projects/$projectId',
@@ -111,9 +173,18 @@ export interface FileRoutesByFullPath {
   '/auth': typeof AuthRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/new': typeof AuthenticatedNewRoute
+  '/security': typeof AuthenticatedSecurityRouteWithChildren
   '/settings': typeof AuthenticatedSettingsRoute
   '/api/chat': typeof ApiChatRoute
   '/projects/$projectId': typeof AuthenticatedProjectsProjectIdRouteWithChildren
+  '/security/attack-paths': typeof AuthenticatedSecurityAttackPathsRoute
+  '/security/compliance': typeof AuthenticatedSecurityComplianceRoute
+  '/security/fix-engine': typeof AuthenticatedSecurityFixEngineRoute
+  '/security/knowledge-graph': typeof AuthenticatedSecurityKnowledgeGraphRoute
+  '/security/red-team': typeof AuthenticatedSecurityRedTeamRoute
+  '/security/threat-model': typeof AuthenticatedSecurityThreatModelRoute
+  '/security/zero-trust': typeof AuthenticatedSecurityZeroTrustRoute
+  '/security/': typeof AuthenticatedSecurityIndexRoute
   '/projects/$projectId/architecture': typeof AuthenticatedProjectsProjectIdArchitectureRoute
   '/projects/$projectId/audit': typeof AuthenticatedProjectsProjectIdAuditRoute
   '/projects/$projectId/blueprint': typeof AuthenticatedProjectsProjectIdBlueprintRoute
@@ -129,6 +200,14 @@ export interface FileRoutesByTo {
   '/new': typeof AuthenticatedNewRoute
   '/settings': typeof AuthenticatedSettingsRoute
   '/api/chat': typeof ApiChatRoute
+  '/security/attack-paths': typeof AuthenticatedSecurityAttackPathsRoute
+  '/security/compliance': typeof AuthenticatedSecurityComplianceRoute
+  '/security/fix-engine': typeof AuthenticatedSecurityFixEngineRoute
+  '/security/knowledge-graph': typeof AuthenticatedSecurityKnowledgeGraphRoute
+  '/security/red-team': typeof AuthenticatedSecurityRedTeamRoute
+  '/security/threat-model': typeof AuthenticatedSecurityThreatModelRoute
+  '/security/zero-trust': typeof AuthenticatedSecurityZeroTrustRoute
+  '/security': typeof AuthenticatedSecurityIndexRoute
   '/projects/$projectId/architecture': typeof AuthenticatedProjectsProjectIdArchitectureRoute
   '/projects/$projectId/audit': typeof AuthenticatedProjectsProjectIdAuditRoute
   '/projects/$projectId/blueprint': typeof AuthenticatedProjectsProjectIdBlueprintRoute
@@ -144,9 +223,18 @@ export interface FileRoutesById {
   '/auth': typeof AuthRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/new': typeof AuthenticatedNewRoute
+  '/_authenticated/security': typeof AuthenticatedSecurityRouteWithChildren
   '/_authenticated/settings': typeof AuthenticatedSettingsRoute
   '/api/chat': typeof ApiChatRoute
   '/_authenticated/projects/$projectId': typeof AuthenticatedProjectsProjectIdRouteWithChildren
+  '/_authenticated/security/attack-paths': typeof AuthenticatedSecurityAttackPathsRoute
+  '/_authenticated/security/compliance': typeof AuthenticatedSecurityComplianceRoute
+  '/_authenticated/security/fix-engine': typeof AuthenticatedSecurityFixEngineRoute
+  '/_authenticated/security/knowledge-graph': typeof AuthenticatedSecurityKnowledgeGraphRoute
+  '/_authenticated/security/red-team': typeof AuthenticatedSecurityRedTeamRoute
+  '/_authenticated/security/threat-model': typeof AuthenticatedSecurityThreatModelRoute
+  '/_authenticated/security/zero-trust': typeof AuthenticatedSecurityZeroTrustRoute
+  '/_authenticated/security/': typeof AuthenticatedSecurityIndexRoute
   '/_authenticated/projects/$projectId/architecture': typeof AuthenticatedProjectsProjectIdArchitectureRoute
   '/_authenticated/projects/$projectId/audit': typeof AuthenticatedProjectsProjectIdAuditRoute
   '/_authenticated/projects/$projectId/blueprint': typeof AuthenticatedProjectsProjectIdBlueprintRoute
@@ -162,9 +250,18 @@ export interface FileRouteTypes {
     | '/auth'
     | '/dashboard'
     | '/new'
+    | '/security'
     | '/settings'
     | '/api/chat'
     | '/projects/$projectId'
+    | '/security/attack-paths'
+    | '/security/compliance'
+    | '/security/fix-engine'
+    | '/security/knowledge-graph'
+    | '/security/red-team'
+    | '/security/threat-model'
+    | '/security/zero-trust'
+    | '/security/'
     | '/projects/$projectId/architecture'
     | '/projects/$projectId/audit'
     | '/projects/$projectId/blueprint'
@@ -180,6 +277,14 @@ export interface FileRouteTypes {
     | '/new'
     | '/settings'
     | '/api/chat'
+    | '/security/attack-paths'
+    | '/security/compliance'
+    | '/security/fix-engine'
+    | '/security/knowledge-graph'
+    | '/security/red-team'
+    | '/security/threat-model'
+    | '/security/zero-trust'
+    | '/security'
     | '/projects/$projectId/architecture'
     | '/projects/$projectId/audit'
     | '/projects/$projectId/blueprint'
@@ -194,9 +299,18 @@ export interface FileRouteTypes {
     | '/auth'
     | '/_authenticated/dashboard'
     | '/_authenticated/new'
+    | '/_authenticated/security'
     | '/_authenticated/settings'
     | '/api/chat'
     | '/_authenticated/projects/$projectId'
+    | '/_authenticated/security/attack-paths'
+    | '/_authenticated/security/compliance'
+    | '/_authenticated/security/fix-engine'
+    | '/_authenticated/security/knowledge-graph'
+    | '/_authenticated/security/red-team'
+    | '/_authenticated/security/threat-model'
+    | '/_authenticated/security/zero-trust'
+    | '/_authenticated/security/'
     | '/_authenticated/projects/$projectId/architecture'
     | '/_authenticated/projects/$projectId/audit'
     | '/_authenticated/projects/$projectId/blueprint'
@@ -253,6 +367,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedSettingsRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/security': {
+      id: '/_authenticated/security'
+      path: '/security'
+      fullPath: '/security'
+      preLoaderRoute: typeof AuthenticatedSecurityRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/new': {
       id: '/_authenticated/new'
       path: '/new'
@@ -266,6 +387,62 @@ declare module '@tanstack/react-router' {
       fullPath: '/dashboard'
       preLoaderRoute: typeof AuthenticatedDashboardRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/security/': {
+      id: '/_authenticated/security/'
+      path: '/'
+      fullPath: '/security/'
+      preLoaderRoute: typeof AuthenticatedSecurityIndexRouteImport
+      parentRoute: typeof AuthenticatedSecurityRoute
+    }
+    '/_authenticated/security/zero-trust': {
+      id: '/_authenticated/security/zero-trust'
+      path: '/zero-trust'
+      fullPath: '/security/zero-trust'
+      preLoaderRoute: typeof AuthenticatedSecurityZeroTrustRouteImport
+      parentRoute: typeof AuthenticatedSecurityRoute
+    }
+    '/_authenticated/security/threat-model': {
+      id: '/_authenticated/security/threat-model'
+      path: '/threat-model'
+      fullPath: '/security/threat-model'
+      preLoaderRoute: typeof AuthenticatedSecurityThreatModelRouteImport
+      parentRoute: typeof AuthenticatedSecurityRoute
+    }
+    '/_authenticated/security/red-team': {
+      id: '/_authenticated/security/red-team'
+      path: '/red-team'
+      fullPath: '/security/red-team'
+      preLoaderRoute: typeof AuthenticatedSecurityRedTeamRouteImport
+      parentRoute: typeof AuthenticatedSecurityRoute
+    }
+    '/_authenticated/security/knowledge-graph': {
+      id: '/_authenticated/security/knowledge-graph'
+      path: '/knowledge-graph'
+      fullPath: '/security/knowledge-graph'
+      preLoaderRoute: typeof AuthenticatedSecurityKnowledgeGraphRouteImport
+      parentRoute: typeof AuthenticatedSecurityRoute
+    }
+    '/_authenticated/security/fix-engine': {
+      id: '/_authenticated/security/fix-engine'
+      path: '/fix-engine'
+      fullPath: '/security/fix-engine'
+      preLoaderRoute: typeof AuthenticatedSecurityFixEngineRouteImport
+      parentRoute: typeof AuthenticatedSecurityRoute
+    }
+    '/_authenticated/security/compliance': {
+      id: '/_authenticated/security/compliance'
+      path: '/compliance'
+      fullPath: '/security/compliance'
+      preLoaderRoute: typeof AuthenticatedSecurityComplianceRouteImport
+      parentRoute: typeof AuthenticatedSecurityRoute
+    }
+    '/_authenticated/security/attack-paths': {
+      id: '/_authenticated/security/attack-paths'
+      path: '/attack-paths'
+      fullPath: '/security/attack-paths'
+      preLoaderRoute: typeof AuthenticatedSecurityAttackPathsRouteImport
+      parentRoute: typeof AuthenticatedSecurityRoute
     }
     '/_authenticated/projects/$projectId': {
       id: '/_authenticated/projects/$projectId'
@@ -326,6 +503,34 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface AuthenticatedSecurityRouteChildren {
+  AuthenticatedSecurityAttackPathsRoute: typeof AuthenticatedSecurityAttackPathsRoute
+  AuthenticatedSecurityComplianceRoute: typeof AuthenticatedSecurityComplianceRoute
+  AuthenticatedSecurityFixEngineRoute: typeof AuthenticatedSecurityFixEngineRoute
+  AuthenticatedSecurityKnowledgeGraphRoute: typeof AuthenticatedSecurityKnowledgeGraphRoute
+  AuthenticatedSecurityRedTeamRoute: typeof AuthenticatedSecurityRedTeamRoute
+  AuthenticatedSecurityThreatModelRoute: typeof AuthenticatedSecurityThreatModelRoute
+  AuthenticatedSecurityZeroTrustRoute: typeof AuthenticatedSecurityZeroTrustRoute
+  AuthenticatedSecurityIndexRoute: typeof AuthenticatedSecurityIndexRoute
+}
+
+const AuthenticatedSecurityRouteChildren: AuthenticatedSecurityRouteChildren = {
+  AuthenticatedSecurityAttackPathsRoute: AuthenticatedSecurityAttackPathsRoute,
+  AuthenticatedSecurityComplianceRoute: AuthenticatedSecurityComplianceRoute,
+  AuthenticatedSecurityFixEngineRoute: AuthenticatedSecurityFixEngineRoute,
+  AuthenticatedSecurityKnowledgeGraphRoute:
+    AuthenticatedSecurityKnowledgeGraphRoute,
+  AuthenticatedSecurityRedTeamRoute: AuthenticatedSecurityRedTeamRoute,
+  AuthenticatedSecurityThreatModelRoute: AuthenticatedSecurityThreatModelRoute,
+  AuthenticatedSecurityZeroTrustRoute: AuthenticatedSecurityZeroTrustRoute,
+  AuthenticatedSecurityIndexRoute: AuthenticatedSecurityIndexRoute,
+}
+
+const AuthenticatedSecurityRouteWithChildren =
+  AuthenticatedSecurityRoute._addFileChildren(
+    AuthenticatedSecurityRouteChildren,
+  )
+
 interface AuthenticatedProjectsProjectIdRouteChildren {
   AuthenticatedProjectsProjectIdArchitectureRoute: typeof AuthenticatedProjectsProjectIdArchitectureRoute
   AuthenticatedProjectsProjectIdAuditRoute: typeof AuthenticatedProjectsProjectIdAuditRoute
@@ -353,6 +558,7 @@ const AuthenticatedProjectsProjectIdRouteWithChildren =
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
   AuthenticatedNewRoute: typeof AuthenticatedNewRoute
+  AuthenticatedSecurityRoute: typeof AuthenticatedSecurityRouteWithChildren
   AuthenticatedSettingsRoute: typeof AuthenticatedSettingsRoute
   AuthenticatedProjectsProjectIdRoute: typeof AuthenticatedProjectsProjectIdRouteWithChildren
 }
@@ -360,6 +566,7 @@ interface AuthenticatedRouteRouteChildren {
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
   AuthenticatedNewRoute: AuthenticatedNewRoute,
+  AuthenticatedSecurityRoute: AuthenticatedSecurityRouteWithChildren,
   AuthenticatedSettingsRoute: AuthenticatedSettingsRoute,
   AuthenticatedProjectsProjectIdRoute:
     AuthenticatedProjectsProjectIdRouteWithChildren,
