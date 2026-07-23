@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ApiSecurityAgentsRouteImport } from './routes/api/security-agents'
 import { Route as ApiChatRouteImport } from './routes/api/chat'
 import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticated/settings'
 import { Route as AuthenticatedSecurityRouteImport } from './routes/_authenticated/security'
@@ -46,6 +47,11 @@ const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiSecurityAgentsRoute = ApiSecurityAgentsRouteImport.update({
+  id: '/api/security-agents',
+  path: '/api/security-agents',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiChatRoute = ApiChatRouteImport.update({
@@ -176,6 +182,7 @@ export interface FileRoutesByFullPath {
   '/security': typeof AuthenticatedSecurityRouteWithChildren
   '/settings': typeof AuthenticatedSettingsRoute
   '/api/chat': typeof ApiChatRoute
+  '/api/security-agents': typeof ApiSecurityAgentsRoute
   '/projects/$projectId': typeof AuthenticatedProjectsProjectIdRouteWithChildren
   '/security/attack-paths': typeof AuthenticatedSecurityAttackPathsRoute
   '/security/compliance': typeof AuthenticatedSecurityComplianceRoute
@@ -200,6 +207,7 @@ export interface FileRoutesByTo {
   '/new': typeof AuthenticatedNewRoute
   '/settings': typeof AuthenticatedSettingsRoute
   '/api/chat': typeof ApiChatRoute
+  '/api/security-agents': typeof ApiSecurityAgentsRoute
   '/security/attack-paths': typeof AuthenticatedSecurityAttackPathsRoute
   '/security/compliance': typeof AuthenticatedSecurityComplianceRoute
   '/security/fix-engine': typeof AuthenticatedSecurityFixEngineRoute
@@ -226,6 +234,7 @@ export interface FileRoutesById {
   '/_authenticated/security': typeof AuthenticatedSecurityRouteWithChildren
   '/_authenticated/settings': typeof AuthenticatedSettingsRoute
   '/api/chat': typeof ApiChatRoute
+  '/api/security-agents': typeof ApiSecurityAgentsRoute
   '/_authenticated/projects/$projectId': typeof AuthenticatedProjectsProjectIdRouteWithChildren
   '/_authenticated/security/attack-paths': typeof AuthenticatedSecurityAttackPathsRoute
   '/_authenticated/security/compliance': typeof AuthenticatedSecurityComplianceRoute
@@ -253,6 +262,7 @@ export interface FileRouteTypes {
     | '/security'
     | '/settings'
     | '/api/chat'
+    | '/api/security-agents'
     | '/projects/$projectId'
     | '/security/attack-paths'
     | '/security/compliance'
@@ -277,6 +287,7 @@ export interface FileRouteTypes {
     | '/new'
     | '/settings'
     | '/api/chat'
+    | '/api/security-agents'
     | '/security/attack-paths'
     | '/security/compliance'
     | '/security/fix-engine'
@@ -302,6 +313,7 @@ export interface FileRouteTypes {
     | '/_authenticated/security'
     | '/_authenticated/settings'
     | '/api/chat'
+    | '/api/security-agents'
     | '/_authenticated/projects/$projectId'
     | '/_authenticated/security/attack-paths'
     | '/_authenticated/security/compliance'
@@ -325,6 +337,7 @@ export interface RootRouteChildren {
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AuthRoute: typeof AuthRoute
   ApiChatRoute: typeof ApiChatRoute
+  ApiSecurityAgentsRoute: typeof ApiSecurityAgentsRoute
   LovableEmailAuthPreviewRoute: typeof LovableEmailAuthPreviewRoute
   LovableEmailAuthWebhookRoute: typeof LovableEmailAuthWebhookRoute
   LovableEmailTransactionalPreviewRoute: typeof LovableEmailTransactionalPreviewRoute
@@ -351,6 +364,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/security-agents': {
+      id: '/api/security-agents'
+      path: '/api/security-agents'
+      fullPath: '/api/security-agents'
+      preLoaderRoute: typeof ApiSecurityAgentsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/chat': {
@@ -580,6 +600,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AuthRoute: AuthRoute,
   ApiChatRoute: ApiChatRoute,
+  ApiSecurityAgentsRoute: ApiSecurityAgentsRoute,
   LovableEmailAuthPreviewRoute: LovableEmailAuthPreviewRoute,
   LovableEmailAuthWebhookRoute: LovableEmailAuthWebhookRoute,
   LovableEmailTransactionalPreviewRoute: LovableEmailTransactionalPreviewRoute,
@@ -587,13 +608,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
