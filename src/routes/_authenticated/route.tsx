@@ -1,9 +1,10 @@
-import { createFileRoute, Outlet, redirect, Link, useNavigate, useRouter } from "@tanstack/react-router";
+import { createFileRoute, Outlet, redirect, Link, useNavigate, useRouter, useLocation } from "@tanstack/react-router";
 import { supabase } from "@/integrations/supabase/client";
 import { useEffect, useState } from "react";
-import { LayoutGrid, PlusCircle, LogOut, Settings, Play, Sparkles, Shield } from "lucide-react";
+import { LayoutGrid, PlusCircle, LogOut, Settings, Play, Sparkles, Shield, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useQueryClient } from "@tanstack/react-query";
+import { getOnboarding } from "@/lib/workspace-store";
 
 export const Route = createFileRoute("/_authenticated")({
   ssr: false,
@@ -19,11 +20,19 @@ function AuthenticatedLayout() {
   const navigate = useNavigate();
   const router = useRouter();
   const queryClient = useQueryClient();
+  const location = useLocation();
   const [email, setEmail] = useState<string>("");
 
   useEffect(() => {
     supabase.auth.getUser().then(({ data }) => setEmail(data.user?.email ?? ""));
   }, []);
+
+  useEffect(() => {
+    const ob = getOnboarding();
+    if (!ob.completed && !location.pathname.startsWith("/onboarding")) {
+      navigate({ to: "/onboarding" });
+    }
+  }, [location.pathname, navigate]);
 
   async function signOut() {
     await queryClient.cancelQueries();
@@ -48,6 +57,7 @@ function AuthenticatedLayout() {
           <NavSection label="Workspace">
             <NavLink to="/dashboard" icon={LayoutGrid} label="Projects" />
             <NavLink to="/new"       icon={PlusCircle} label="New project" />
+            <NavLink to="/team"      icon={Users}      label="Team" />
           </NavSection>
 
           <NavSection label="Agents">
