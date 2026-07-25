@@ -14,8 +14,10 @@ import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ApiSecurityAgentsRouteImport } from './routes/api/security-agents'
 import { Route as ApiChatRouteImport } from './routes/api/chat'
+import { Route as AuthenticatedTeamRouteImport } from './routes/_authenticated/team'
 import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticated/settings'
 import { Route as AuthenticatedSecurityRouteImport } from './routes/_authenticated/security'
+import { Route as AuthenticatedOnboardingRouteImport } from './routes/_authenticated/onboarding'
 import { Route as AuthenticatedNewRouteImport } from './routes/_authenticated/new'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedSecurityIndexRouteImport } from './routes/_authenticated/security.index'
@@ -59,6 +61,11 @@ const ApiChatRoute = ApiChatRouteImport.update({
   path: '/api/chat',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedTeamRoute = AuthenticatedTeamRouteImport.update({
+  id: '/team',
+  path: '/team',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedSettingsRoute = AuthenticatedSettingsRouteImport.update({
   id: '/settings',
   path: '/settings',
@@ -67,6 +74,11 @@ const AuthenticatedSettingsRoute = AuthenticatedSettingsRouteImport.update({
 const AuthenticatedSecurityRoute = AuthenticatedSecurityRouteImport.update({
   id: '/security',
   path: '/security',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedOnboardingRoute = AuthenticatedOnboardingRouteImport.update({
+  id: '/onboarding',
+  path: '/onboarding',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedNewRoute = AuthenticatedNewRouteImport.update({
@@ -179,8 +191,10 @@ export interface FileRoutesByFullPath {
   '/auth': typeof AuthRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/new': typeof AuthenticatedNewRoute
+  '/onboarding': typeof AuthenticatedOnboardingRoute
   '/security': typeof AuthenticatedSecurityRouteWithChildren
   '/settings': typeof AuthenticatedSettingsRoute
+  '/team': typeof AuthenticatedTeamRoute
   '/api/chat': typeof ApiChatRoute
   '/api/security-agents': typeof ApiSecurityAgentsRoute
   '/projects/$projectId': typeof AuthenticatedProjectsProjectIdRouteWithChildren
@@ -205,7 +219,9 @@ export interface FileRoutesByTo {
   '/auth': typeof AuthRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/new': typeof AuthenticatedNewRoute
+  '/onboarding': typeof AuthenticatedOnboardingRoute
   '/settings': typeof AuthenticatedSettingsRoute
+  '/team': typeof AuthenticatedTeamRoute
   '/api/chat': typeof ApiChatRoute
   '/api/security-agents': typeof ApiSecurityAgentsRoute
   '/security/attack-paths': typeof AuthenticatedSecurityAttackPathsRoute
@@ -231,8 +247,10 @@ export interface FileRoutesById {
   '/auth': typeof AuthRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/new': typeof AuthenticatedNewRoute
+  '/_authenticated/onboarding': typeof AuthenticatedOnboardingRoute
   '/_authenticated/security': typeof AuthenticatedSecurityRouteWithChildren
   '/_authenticated/settings': typeof AuthenticatedSettingsRoute
+  '/_authenticated/team': typeof AuthenticatedTeamRoute
   '/api/chat': typeof ApiChatRoute
   '/api/security-agents': typeof ApiSecurityAgentsRoute
   '/_authenticated/projects/$projectId': typeof AuthenticatedProjectsProjectIdRouteWithChildren
@@ -259,8 +277,10 @@ export interface FileRouteTypes {
     | '/auth'
     | '/dashboard'
     | '/new'
+    | '/onboarding'
     | '/security'
     | '/settings'
+    | '/team'
     | '/api/chat'
     | '/api/security-agents'
     | '/projects/$projectId'
@@ -285,7 +305,9 @@ export interface FileRouteTypes {
     | '/auth'
     | '/dashboard'
     | '/new'
+    | '/onboarding'
     | '/settings'
+    | '/team'
     | '/api/chat'
     | '/api/security-agents'
     | '/security/attack-paths'
@@ -310,8 +332,10 @@ export interface FileRouteTypes {
     | '/auth'
     | '/_authenticated/dashboard'
     | '/_authenticated/new'
+    | '/_authenticated/onboarding'
     | '/_authenticated/security'
     | '/_authenticated/settings'
+    | '/_authenticated/team'
     | '/api/chat'
     | '/api/security-agents'
     | '/_authenticated/projects/$projectId'
@@ -380,6 +404,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiChatRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated/team': {
+      id: '/_authenticated/team'
+      path: '/team'
+      fullPath: '/team'
+      preLoaderRoute: typeof AuthenticatedTeamRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/settings': {
       id: '/_authenticated/settings'
       path: '/settings'
@@ -392,6 +423,13 @@ declare module '@tanstack/react-router' {
       path: '/security'
       fullPath: '/security'
       preLoaderRoute: typeof AuthenticatedSecurityRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/onboarding': {
+      id: '/_authenticated/onboarding'
+      path: '/onboarding'
+      fullPath: '/onboarding'
+      preLoaderRoute: typeof AuthenticatedOnboardingRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/new': {
@@ -578,16 +616,20 @@ const AuthenticatedProjectsProjectIdRouteWithChildren =
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
   AuthenticatedNewRoute: typeof AuthenticatedNewRoute
+  AuthenticatedOnboardingRoute: typeof AuthenticatedOnboardingRoute
   AuthenticatedSecurityRoute: typeof AuthenticatedSecurityRouteWithChildren
   AuthenticatedSettingsRoute: typeof AuthenticatedSettingsRoute
+  AuthenticatedTeamRoute: typeof AuthenticatedTeamRoute
   AuthenticatedProjectsProjectIdRoute: typeof AuthenticatedProjectsProjectIdRouteWithChildren
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
   AuthenticatedNewRoute: AuthenticatedNewRoute,
+  AuthenticatedOnboardingRoute: AuthenticatedOnboardingRoute,
   AuthenticatedSecurityRoute: AuthenticatedSecurityRouteWithChildren,
   AuthenticatedSettingsRoute: AuthenticatedSettingsRoute,
+  AuthenticatedTeamRoute: AuthenticatedTeamRoute,
   AuthenticatedProjectsProjectIdRoute:
     AuthenticatedProjectsProjectIdRouteWithChildren,
 }
@@ -608,13 +650,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
