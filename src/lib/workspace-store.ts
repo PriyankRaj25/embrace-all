@@ -193,3 +193,102 @@ export const CLOUD_META: Record<CloudProvider, { label: string; regions: string[
   gcp:   { label: "Google Cloud",        regions: ["us-central1", "europe-west1", "asia-south1"],       blurb: "Strong data & ML primitives." },
   multi: { label: "Multi-cloud",         regions: ["multi-region"],                                     blurb: "Portable IaC across providers." },
 };
+
+// ---------- Cloud accounts (multi-cloud) ----------
+export type CloudAccount = {
+  id: string;
+  provider: CloudProvider;
+  label: string;
+  identifier: string;   // account id / subscription id / project id
+  auth: string;         // role ARN / tenant / service-account email
+  regions: string[];
+  mode: "read-only" | "deploy";
+  status: "connected" | "pending";
+  at: string;
+};
+
+export type SecurityConfig = {
+  frameworks: string[];
+  continuousScan: boolean;
+  autoRemediate: "off" | "propose" | "auto";
+  redTeam: boolean;
+  zeroTrust: boolean;
+  dataResidency: string;
+};
+
+const K2 = {
+  accounts: "aether:cloud-accounts",
+  security: "aether:security-config",
+};
+
+export function listCloudAccounts(): CloudAccount[] {
+  return read<CloudAccount[]>(K2.accounts, []);
+}
+export function addCloudAccount(a: Omit<CloudAccount, "id" | "at" | "status"> & { status?: CloudAccount["status"] }): CloudAccount {
+  const entry: CloudAccount = {
+    ...a,
+    status: a.status ?? "connected",
+    id: crypto.randomUUID(),
+    at: new Date().toISOString(),
+  };
+  write(K2.accounts, [entry, ...listCloudAccounts()]);
+  return entry;
+}
+export function removeCloudAccount(id: string) {
+  write(K2.accounts, listCloudAccounts().filter((a) => a.id !== id));
+}
+
+export function getSecurityConfig(): SecurityConfig {
+  return read<SecurityConfig>(K2.security, {
+    frameworks: ["SOC 2"],
+    continuousScan: true,
+    autoRemediate: "propose",
+    redTeam: false,
+    zeroTrust: true,
+    dataResidency: "us",
+  });
+}
+export function saveSecurityConfig(c: Partial<SecurityConfig>) {
+  write(K2.security, { ...getSecurityConfig(), ...c });
+}
+
+export const CLOUD_CONNECT_META: Record<CloudProvider, {
+  idLabel: string; idPlaceholder: string; authLabel: string; authPlaceholder: string; steps: string[];
+}> = {
+  aws: {
+    idLabel: "Account ID", idPlaceholder: "123456789012",
+    authLabel: "Cross-account role ARN", authPlaceholder: "arn:aws:iam::123456789012:role/AetherOSAgent",
+    steps: [
+      "Create an IAM role trusting AetherOS (external ID shown below)",
+      "Attach SecurityAudit + ViewOnlyAccess (add PowerUser for deploy mode)",
+      "Paste the role ARN — the agent assumes it read-only first",
+    ],
+  },
+  azure: {
+    idLabel: "Subscription ID", idPlaceholder: "00000000-0000-0000-0000-000000000000",
+    authLabel: "Tenant ID / App registration", authPlaceholder: "tenant-id : app-id",
+    steps: [
+      "Register an app in Entra ID and grant Reader on the subscription",
+      "Add Security Reader for posture scanning",
+      "Paste tenant + app id",
+    ],
+  },
+  gcp: {
+    idLabel: "Project ID", idPlaceholder: "acme-platform-prod",
+    authLabel: "Service account email", authPlaceholder: "aetheros@acme-platform.iam.gserviceaccount.com",
+    steps: [
+      "Create a service account with Viewer + Security Reviewer",
+      "Enable workload identity federation for AetherOS",
+      "Paste the service account email",
+    ],
+  },
+  multi: {
+    idLabel: "Landing zone", idPlaceholder: "acme-global-lz",
+    authLabel: "Federation identifier", authPlaceholder: "aetheros-federation",
+    steps: [
+      "Connect each provider individually after setup",
+      "AetherOS normalizes resources into one graph",
+      "Blueprints stay portable across providers",
+    ],
+  },
+};
