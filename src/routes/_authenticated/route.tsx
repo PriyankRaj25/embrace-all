@@ -5,6 +5,7 @@ import { LayoutGrid, PlusCircle, LogOut, Settings, Play, Sparkles, Shield, Users
 import { Button } from "@/components/ui/button";
 import { useQueryClient } from "@tanstack/react-query";
 import { getOnboarding } from "@/lib/workspace-store";
+import { GlobalAssistantProvider, GlobalAssistantDock } from "@/components/global-assistant";
 
 export const Route = createFileRoute("/_authenticated")({
   ssr: false,
