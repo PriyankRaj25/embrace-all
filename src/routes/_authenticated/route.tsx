@@ -91,9 +91,12 @@ function AuthenticatedLayout() {
       <main className="flex-1 min-w-0">
         <Outlet />
       </main>
+      <GlobalAssistantDock />
     </div>
+    </GlobalAssistantProvider>
   );
 }
+
 
 function NavSection({ label, children }: { label: string; children: React.ReactNode }) {
   return (
