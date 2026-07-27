@@ -73,6 +73,18 @@ function SettingsPage() {
         <p className="mt-1.5 text-sm text-muted-foreground">Manage your workspace, cloud targets, LLM keys and notifications.</p>
       </header>
 
+      <Tabs defaultValue="profile" className="w-full">
+        <TabsList className="flex w-full flex-wrap h-auto justify-start gap-1 glass-subtle p-1">
+          <TabsTrigger value="profile">Profile</TabsTrigger>
+          <TabsTrigger value="workspace">Workspace</TabsTrigger>
+          <TabsTrigger value="keys">LLM keys</TabsTrigger>
+          <TabsTrigger value="model">Model</TabsTrigger>
+          <TabsTrigger value="team">Team</TabsTrigger>
+          <TabsTrigger value="preferences">Preferences</TabsTrigger>
+          <TabsTrigger value="tour">Tour</TabsTrigger>
+        </TabsList>
+
+      <TabsContent value="profile" className="mt-4 space-y-6">
       <Section icon={User} title="Profile" desc="How the agents address you and where results are sent.">
         <div className="grid gap-4 sm:grid-cols-2">
           <Field label="Full name">
