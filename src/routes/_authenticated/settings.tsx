@@ -143,7 +143,9 @@ function SettingsPage() {
           <Button size="sm" className="bg-foreground text-background hover:bg-foreground/90" onClick={saveWorkspace}>Save workspace</Button>
         </div>
       </Section>
+      </TabsContent>
 
+      <TabsContent value="keys" className="mt-4 space-y-6">
       <Section icon={KeyRound} title="Bring your own LLM keys" desc="Keys are stored only in this browser (localStorage) and used for your agent runs.">
         <div className="grid gap-2 grid-cols-2 sm:grid-cols-5">
           {(Object.keys(PROVIDER_META) as LlmProvider[]).map((p) => (
