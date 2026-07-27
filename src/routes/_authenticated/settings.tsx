@@ -200,7 +200,9 @@ function SettingsPage() {
           ))}
         </div>
       </Section>
+      </TabsContent>
 
+      <TabsContent value="model" className="mt-4 space-y-6">
       <Section icon={Cpu} title="Default model" desc="Fallback model for agents when no BYO key is set.">
         <div className="grid gap-2 sm:grid-cols-2">
           {["google/gemini-2.5-flash", "google/gemini-2.5-pro", "openai/gpt-5", "openai/gpt-5-mini"].map((m) => (
@@ -215,13 +217,17 @@ function SettingsPage() {
           ))}
         </div>
       </Section>
+      </TabsContent>
 
+      <TabsContent value="team" className="mt-4 space-y-6">
       <Section icon={Users} title="Team" desc="Members, roles and invites live under Team.">
         <Link to="/team" className="inline-flex">
           <Button variant="outline" size="sm">Open team management →</Button>
         </Link>
       </Section>
+      </TabsContent>
 
+      <TabsContent value="preferences" className="mt-4 space-y-6">
       <Section icon={Bell} title="Notifications" desc="Get pinged when agents complete or need approval.">
         <Toggle label="Email me when a blueprint finishes" value={notify} onChange={setNotify} />
         <Toggle label="Auto-approve low-risk stages" value={autoApprove} onChange={setAutoApprove} />
@@ -229,7 +235,7 @@ function SettingsPage() {
 
       <Section icon={ShieldCheck} title="Governance" desc="Policies enforced across every generated blueprint.">
         <div className="grid gap-2 sm:grid-cols-2">
-          {(compliance.length ? compliance : ["Configure compliance above"]).map((p) => (
+          {(compliance.length ? compliance : ["Configure compliance in Workspace"]).map((p) => (
             <div key={p} className="flex items-center justify-between rounded-lg glass-subtle px-3 py-2">
               <span className="text-sm">{p}</span>
               <span className="text-[10px] font-mono uppercase tracking-widest text-muted-foreground">enforced</span>
@@ -237,7 +243,9 @@ function SettingsPage() {
           ))}
         </div>
       </Section>
+      </TabsContent>
 
+      <TabsContent value="tour" className="mt-4 space-y-6">
       <Section icon={Sparkles} title="Product tour" desc="Replay the onboarding walkthrough anytime.">
         <div className="flex gap-2">
           <Button variant="outline" size="sm" onClick={() => { resetOnboarding(); navigate({ to: "/onboarding" }); }}>
@@ -245,9 +253,12 @@ function SettingsPage() {
           </Button>
         </div>
       </Section>
+      </TabsContent>
+      </Tabs>
     </div>
   );
 }
+
 
 function Section({ icon: Icon, title, desc, children }: { icon: typeof User; title: string; desc: string; children: React.ReactNode }) {
   return (
