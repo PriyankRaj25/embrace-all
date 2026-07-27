@@ -5,6 +5,7 @@ import { LayoutGrid, PlusCircle, LogOut, Settings, Play, Sparkles, Shield, Users
 import { Button } from "@/components/ui/button";
 import { useQueryClient } from "@tanstack/react-query";
 import { getOnboarding } from "@/lib/workspace-store";
+import { GlobalAssistantProvider, GlobalAssistantDock } from "@/components/global-assistant";
 
 export const Route = createFileRoute("/_authenticated")({
   ssr: false,
@@ -43,6 +44,7 @@ function AuthenticatedLayout() {
   }
 
   return (
+    <GlobalAssistantProvider>
     <div className="min-h-screen flex bg-background">
       <aside className="w-60 shrink-0 border-r border-border/60 glass-subtle flex flex-col">
         <Link to="/" className="flex items-center gap-2.5 px-5 h-14 border-b border-border/60">
@@ -90,9 +92,12 @@ function AuthenticatedLayout() {
       <main className="flex-1 min-w-0">
         <Outlet />
       </main>
+      <GlobalAssistantDock />
     </div>
+    </GlobalAssistantProvider>
   );
 }
+
 
 function NavSection({ label, children }: { label: string; children: React.ReactNode }) {
   return (
