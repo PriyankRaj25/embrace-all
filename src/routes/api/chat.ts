@@ -58,8 +58,10 @@ export const Route = createFileRoute("/api/chat")({
             onError: (error) => {
               console.error("[api/chat] stream error", error);
               const message = error instanceof Error ? error.message : String(error);
-              if (message.includes("429")) return "Rate limit reached — please retry in a moment.";
-              if (message.includes("402")) return "AI credits exhausted. Add credits in Settings → Plans & credits.";
+              if (message.includes("429") || /rate limit/i.test(message))
+                return "Rate limit reached — please retry in a moment.";
+              if (message.includes("402") || /payment required/i.test(message))
+                return "AI credits exhausted for this workspace. Add credits in Settings → Plans & credits to keep chatting.";
               return message;
             },
           });
