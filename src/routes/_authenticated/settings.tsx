@@ -100,7 +100,9 @@ function SettingsPage() {
           </Button>
         </div>
       </Section>
+      </TabsContent>
 
+      <TabsContent value="workspace" className="mt-4 space-y-6">
       <Section icon={Cloud} title="Workspace & cloud" desc="Default cloud target, region and compliance envelope for new projects.">
         <div className="grid gap-4 sm:grid-cols-2">
           <Field label="Workspace name">
