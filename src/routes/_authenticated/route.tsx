@@ -43,6 +43,7 @@ function AuthenticatedLayout() {
   }
 
   return (
+    <GlobalAssistantProvider>
     <div className="min-h-screen flex bg-background">
       <aside className="w-60 shrink-0 border-r border-border/60 glass-subtle flex flex-col">
         <Link to="/" className="flex items-center gap-2.5 px-5 h-14 border-b border-border/60">
