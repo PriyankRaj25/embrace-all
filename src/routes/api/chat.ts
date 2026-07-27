@@ -53,7 +53,16 @@ export const Route = createFileRoute("/api/chat")({
             messages: await convertToModelMessages(body.messages as UIMessage[]),
           });
 
-          return result.toUIMessageStreamResponse({ originalMessages: body.messages as UIMessage[] });
+          return result.toUIMessageStreamResponse({
+            originalMessages: body.messages as UIMessage[],
+            onError: (error) => {
+              console.error("[api/chat] stream error", error);
+              const message = error instanceof Error ? error.message : String(error);
+              if (message.includes("429")) return "Rate limit reached — please retry in a moment.";
+              if (message.includes("402")) return "AI credits exhausted. Add credits in Settings → Plans & credits.";
+              return message;
+            },
+          });
         }
 
         const session = await validateBearer(request);
