@@ -1,7 +1,7 @@
 import { createFileRoute, Outlet, redirect, Link, useNavigate, useRouter, useLocation } from "@tanstack/react-router";
 import { supabase } from "@/integrations/supabase/client";
 import { useEffect, useState } from "react";
-import { LayoutGrid, PlusCircle, LogOut, Settings, Play, Sparkles, Shield, Users } from "lucide-react";
+import { LayoutGrid, PlusCircle, LogOut, Settings, Play, Sparkles, Shield, Users, MessageSquare, CreditCard } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useQueryClient } from "@tanstack/react-query";
 import { getOnboarding } from "@/lib/workspace-store";
