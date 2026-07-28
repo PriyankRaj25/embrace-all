@@ -15,6 +15,7 @@ import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ApiSecurityAgentsRouteImport } from './routes/api/security-agents'
 import { Route as ApiChatRouteImport } from './routes/api/chat'
+import { Route as AuthenticatedVegaRouteImport } from './routes/_authenticated/vega'
 import { Route as AuthenticatedTeamRouteImport } from './routes/_authenticated/team'
 import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticated/settings'
 import { Route as AuthenticatedSecurityRouteImport } from './routes/_authenticated/security'
@@ -67,6 +68,11 @@ const ApiChatRoute = ApiChatRouteImport.update({
   id: '/api/chat',
   path: '/api/chat',
   getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedVegaRoute = AuthenticatedVegaRouteImport.update({
+  id: '/vega',
+  path: '/vega',
+  getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedTeamRoute = AuthenticatedTeamRouteImport.update({
   id: '/team',
@@ -209,6 +215,7 @@ export interface FileRoutesByFullPath {
   '/security': typeof AuthenticatedSecurityRouteWithChildren
   '/settings': typeof AuthenticatedSettingsRoute
   '/team': typeof AuthenticatedTeamRoute
+  '/vega': typeof AuthenticatedVegaRoute
   '/api/chat': typeof ApiChatRoute
   '/api/security-agents': typeof ApiSecurityAgentsRoute
   '/projects/$projectId': typeof AuthenticatedProjectsProjectIdRouteWithChildren
@@ -238,6 +245,7 @@ export interface FileRoutesByTo {
   '/onboarding': typeof AuthenticatedOnboardingRoute
   '/settings': typeof AuthenticatedSettingsRoute
   '/team': typeof AuthenticatedTeamRoute
+  '/vega': typeof AuthenticatedVegaRoute
   '/api/chat': typeof ApiChatRoute
   '/api/security-agents': typeof ApiSecurityAgentsRoute
   '/security/attack-paths': typeof AuthenticatedSecurityAttackPathsRoute
@@ -269,6 +277,7 @@ export interface FileRoutesById {
   '/_authenticated/security': typeof AuthenticatedSecurityRouteWithChildren
   '/_authenticated/settings': typeof AuthenticatedSettingsRoute
   '/_authenticated/team': typeof AuthenticatedTeamRoute
+  '/_authenticated/vega': typeof AuthenticatedVegaRoute
   '/api/chat': typeof ApiChatRoute
   '/api/security-agents': typeof ApiSecurityAgentsRoute
   '/_authenticated/projects/$projectId': typeof AuthenticatedProjectsProjectIdRouteWithChildren
@@ -301,6 +310,7 @@ export interface FileRouteTypes {
     | '/security'
     | '/settings'
     | '/team'
+    | '/vega'
     | '/api/chat'
     | '/api/security-agents'
     | '/projects/$projectId'
@@ -330,6 +340,7 @@ export interface FileRouteTypes {
     | '/onboarding'
     | '/settings'
     | '/team'
+    | '/vega'
     | '/api/chat'
     | '/api/security-agents'
     | '/security/attack-paths'
@@ -360,6 +371,7 @@ export interface FileRouteTypes {
     | '/_authenticated/security'
     | '/_authenticated/settings'
     | '/_authenticated/team'
+    | '/_authenticated/vega'
     | '/api/chat'
     | '/api/security-agents'
     | '/_authenticated/projects/$projectId'
@@ -435,6 +447,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/api/chat'
       preLoaderRoute: typeof ApiChatRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/vega': {
+      id: '/_authenticated/vega'
+      path: '/vega'
+      fullPath: '/vega'
+      preLoaderRoute: typeof AuthenticatedVegaRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/team': {
       id: '/_authenticated/team'
@@ -660,6 +679,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedSecurityRoute: typeof AuthenticatedSecurityRouteWithChildren
   AuthenticatedSettingsRoute: typeof AuthenticatedSettingsRoute
   AuthenticatedTeamRoute: typeof AuthenticatedTeamRoute
+  AuthenticatedVegaRoute: typeof AuthenticatedVegaRoute
   AuthenticatedProjectsProjectIdRoute: typeof AuthenticatedProjectsProjectIdRouteWithChildren
 }
 
@@ -671,6 +691,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedSecurityRoute: AuthenticatedSecurityRouteWithChildren,
   AuthenticatedSettingsRoute: AuthenticatedSettingsRoute,
   AuthenticatedTeamRoute: AuthenticatedTeamRoute,
+  AuthenticatedVegaRoute: AuthenticatedVegaRoute,
   AuthenticatedProjectsProjectIdRoute:
     AuthenticatedProjectsProjectIdRouteWithChildren,
 }

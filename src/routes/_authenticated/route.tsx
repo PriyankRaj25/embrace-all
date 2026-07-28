@@ -63,6 +63,7 @@ function AuthenticatedLayout() {
           </NavSection>
 
           <NavSection label="Agents">
+            <NavLink to="/vega"     icon={MessageSquare} label="Vega assistant" />
             <NavLink to="/security" icon={Shield} label="Security Agent" />
           </NavSection>
 
@@ -71,8 +72,10 @@ function AuthenticatedLayout() {
           </NavSection>
 
           <NavSection label="Account">
+            <NavLink to="/billing"  icon={CreditCard} label="Billing & plans" />
             <NavLink to="/settings" icon={Settings} label="Settings" />
           </NavSection>
+
         </nav>
 
         <div className="p-3 border-t border-border/60">
