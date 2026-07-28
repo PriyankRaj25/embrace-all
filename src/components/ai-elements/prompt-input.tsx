@@ -73,7 +73,7 @@ export const PromptInput = ({ className, onSubmit, children, ...props }: PromptI
 export type PromptInputTextareaProps = ComponentProps<typeof Textarea>;
 
 export const PromptInputTextarea = forwardRef<HTMLTextAreaElement, PromptInputTextareaProps>(
-  ({ className, onKeyDown, placeholder = "Ask AetherOS to design, review, or explain an architecture…", ...props }, ref) => {
+  ({ className, onKeyDown, placeholder = "Ask Vega to design, review, or explain an architecture…", ...props }, ref) => {
     const { value, setValue } = usePromptInput();
     const localRef = useRef<HTMLTextAreaElement | null>(null);
     useImperativeHandle(ref, () => localRef.current as HTMLTextAreaElement);

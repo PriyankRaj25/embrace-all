@@ -33,7 +33,9 @@ function Landing() {
             <a href="#demo" className="hover:text-foreground transition">Live demo</a>
             <a href="#agents" className="hover:text-foreground transition">Agents</a>
             <a href="#flow" className="hover:text-foreground transition">Workflow</a>
+            <Link to="/pricing" className="hover:text-foreground transition">Pricing</Link>
           </nav>
+
           <div className="flex items-center gap-2">
             <Button asChild variant="ghost" size="sm"><Link to="/auth">Sign in</Link></Button>
             <Button asChild size="sm" className="bg-foreground text-background hover:bg-foreground/90 rounded-full">

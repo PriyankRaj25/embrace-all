@@ -99,7 +99,7 @@ function textOf(message: UIMessage) {
 export function AssistantSurface({
   className,
   suggestions = [],
-  emptyTitle = "One assistant, everywhere",
+  emptyTitle = "Vega — one assistant, everywhere",
   emptyDescription = "Ask about architecture, security, cost or compliance — context follows you across pages.",
 }: {
   className?: string;
@@ -167,7 +167,7 @@ export function AssistantSurface({
             autoFocus
             rows={2}
             className="min-h-16"
-            placeholder="Ask AetherOS anything…"
+            placeholder="Ask Vega anything…"
           />
           <PromptInputFooter className="justify-end">
             <PromptInputSubmit status={status} disabled={busy && status === "submitted"} onStop={stop} />
@@ -189,16 +189,16 @@ export function GlobalAssistantDock() {
           className="fixed bottom-5 right-5 z-50 flex items-center gap-2 rounded-full neumorph-sm glass-panel px-4 py-2.5 text-sm transition hover:opacity-90"
         >
           <MessageSquare className="h-4 w-4" />
-          Ask AetherOS
+          Ask Vega
         </button>
       )}
 
       {open && (
         <div className="fixed bottom-5 right-5 z-50 flex h-[560px] w-[400px] max-w-[calc(100vw-2rem)] flex-col overflow-hidden rounded-2xl glass-panel border border-border/60 shadow-2xl">
           <div className="flex items-center gap-2 border-b border-border/60 px-4 py-2.5">
-            <div className="grid h-6 w-6 place-items-center rounded-lg neumorph-sm text-[10px] font-mono font-bold">Æ</div>
+            <div className="grid h-6 w-6 place-items-center rounded-lg neumorph-sm text-[10px] font-mono font-bold">V</div>
             <div className="flex-1 text-[10px] font-mono uppercase tracking-widest text-muted-foreground">
-              AetherOS assistant
+              Vega · AetherOS agent
             </div>
             <button onClick={clear} title="Clear conversation" className="text-muted-foreground hover:text-foreground">
               <Trash2 className="h-3.5 w-3.5" />

@@ -1,7 +1,7 @@
 import { createFileRoute, Outlet, redirect, Link, useNavigate, useRouter, useLocation } from "@tanstack/react-router";
 import { supabase } from "@/integrations/supabase/client";
 import { useEffect, useState } from "react";
-import { LayoutGrid, PlusCircle, LogOut, Settings, Play, Sparkles, Shield, Users } from "lucide-react";
+import { LayoutGrid, PlusCircle, LogOut, Settings, Play, Sparkles, Shield, Users, MessageSquare, CreditCard } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useQueryClient } from "@tanstack/react-query";
 import { getOnboarding } from "@/lib/workspace-store";
@@ -63,6 +63,7 @@ function AuthenticatedLayout() {
           </NavSection>
 
           <NavSection label="Agents">
+            <NavLink to="/vega"     icon={MessageSquare} label="Vega assistant" />
             <NavLink to="/security" icon={Shield} label="Security Agent" />
           </NavSection>
 
@@ -71,8 +72,10 @@ function AuthenticatedLayout() {
           </NavSection>
 
           <NavSection label="Account">
+            <NavLink to="/billing"  icon={CreditCard} label="Billing & plans" />
             <NavLink to="/settings" icon={Settings} label="Settings" />
           </NavSection>
+
         </nav>
 
         <div className="p-3 border-t border-border/60">
