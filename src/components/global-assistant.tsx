@@ -99,7 +99,7 @@ function textOf(message: UIMessage) {
 export function AssistantSurface({
   className,
   suggestions = [],
-  emptyTitle = "One assistant, everywhere",
+  emptyTitle = "Vega — one assistant, everywhere",
   emptyDescription = "Ask about architecture, security, cost or compliance — context follows you across pages.",
 }: {
   className?: string;
@@ -196,7 +196,7 @@ export function GlobalAssistantDock() {
       {open && (
         <div className="fixed bottom-5 right-5 z-50 flex h-[560px] w-[400px] max-w-[calc(100vw-2rem)] flex-col overflow-hidden rounded-2xl glass-panel border border-border/60 shadow-2xl">
           <div className="flex items-center gap-2 border-b border-border/60 px-4 py-2.5">
-            <div className="grid h-6 w-6 place-items-center rounded-lg neumorph-sm text-[10px] font-mono font-bold">Æ</div>
+            <div className="grid h-6 w-6 place-items-center rounded-lg neumorph-sm text-[10px] font-mono font-bold">V</div>
             <div className="flex-1 text-[10px] font-mono uppercase tracking-widest text-muted-foreground">
               Vega · AetherOS agent
             </div>
