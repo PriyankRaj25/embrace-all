@@ -14,7 +14,7 @@ export function WorkspaceChat({ projectId, projectName }: { projectId: string; p
       <div className="flex items-center gap-2 px-4 py-2.5 border-b border-border">
         <Sparkles className="h-3.5 w-3.5 text-muted-foreground" />
         <div className="text-[10px] font-mono uppercase tracking-widest text-muted-foreground">
-          Ask AetherOS · project {projectId.slice(0, 8)}
+          Ask Vega · project {projectId.slice(0, 8)}
         </div>
       </div>
       <AssistantSurface
