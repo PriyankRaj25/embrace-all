@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { useQueryClient } from "@tanstack/react-query";
 import { getOnboarding } from "@/lib/workspace-store";
 import { GlobalAssistantProvider, GlobalAssistantDock } from "@/components/global-assistant";
+import { UsageMeter } from "@/components/usage-meter";
 
 export const Route = createFileRoute("/_authenticated")({
   ssr: false,
