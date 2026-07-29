@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { useQueryClient } from "@tanstack/react-query";
 import { getOnboarding } from "@/lib/workspace-store";
 import { GlobalAssistantProvider, GlobalAssistantDock } from "@/components/global-assistant";
+import { UsageMeter } from "@/components/usage-meter";
 
 export const Route = createFileRoute("/_authenticated")({
   ssr: false,
@@ -78,7 +79,8 @@ function AuthenticatedLayout() {
 
         </nav>
 
-        <div className="p-3 border-t border-border/60">
+        <div className="p-3 border-t border-border/60 space-y-2">
+          <UsageMeter />
           <div className="neumorph-sm rounded-xl p-3 space-y-2">
             <div className="flex items-center gap-2">
               <div className="h-6 w-6 rounded-full grid place-items-center bg-foreground text-background text-[10px] font-semibold">

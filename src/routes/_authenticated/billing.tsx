@@ -14,6 +14,7 @@ import {
   removePaymentMethod, setDefaultPaymentMethod, brandFromNumber, type PlanId,
 } from "@/lib/pricing";
 import { cn } from "@/lib/utils";
+import { UsagePanel } from "@/components/usage-meter";
 
 export const Route = createFileRoute("/_authenticated/billing")({
   ssr: false,
@@ -165,6 +166,7 @@ function BillingPage() {
         </TabsContent>
 
         <TabsContent value="usage" className="mt-5 space-y-4">
+          <UsagePanel />
           <div className="grid gap-3 sm:grid-cols-3">
             {[
               { label: "Agent runs", value: "412 / 1,000" },
