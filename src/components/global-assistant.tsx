@@ -17,6 +17,8 @@ import {
 } from "@/components/ai-elements/prompt-input";
 import { Shimmer } from "@/components/ai-elements/shimmer";
 import { cn } from "@/lib/utils";
+import { consumeCredits } from "@/lib/credits";
+import { UsageMeter } from "@/components/usage-meter";
 
 const STORAGE_KEY = "aetheros.global-chat.v1";
 
@@ -71,6 +73,7 @@ export function GlobalAssistantProvider({ children }: { children: React.ReactNod
     (text: string) => {
       const value = text.trim();
       if (!value) return;
+      consumeCredits("vega_message", `Vega · ${value.slice(0, 48)}`);
       void sendMessage({ text: `${value}\n\n[context: user is on ${pathRef.current}]` });
     },
     [sendMessage],
