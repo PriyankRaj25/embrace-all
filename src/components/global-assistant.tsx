@@ -44,6 +44,7 @@ type AssistantCtx = {
   clear: () => void;
   open: boolean;
   setOpen: (v: boolean) => void;
+  snapshot?: CreditSnapshot;
 };
 
 const Ctx = createContext<AssistantCtx | null>(null);
@@ -227,8 +228,11 @@ export function AssistantSurface({
             <PromptInputSubmit status={status} disabled={busy && status === "submitted"} onStop={stop} />
           </PromptInputFooter>
         </PromptInput>
+        <div className="mt-2 flex flex-wrap items-center justify-center gap-1.5">
+          <QuotaStrip kinds={["vega_message"]} />
+        </div>
         <p className="mt-1.5 text-center text-[10px] text-muted-foreground/70">
-          1 credit per message · usage meters live in Billing
+          1 credit per message · charged by the backend only when a reply is produced
         </p>
       </div>
     </div>
