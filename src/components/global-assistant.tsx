@@ -61,7 +61,30 @@ export function GlobalAssistantProvider({ children }: { children: React.ReactNod
   const pathRef = useRef(location.pathname);
   pathRef.current = location.pathname;
 
-  const transport = useMemo(() => new DefaultChatTransport({ api: "/api/chat" }), []);
+  const qc = useQueryClient();
+  const { data: snapshot } = useCreditSnapshot();
+  const snapRef = useRef<CreditSnapshot | undefined>(undefined);
+  snapRef.current = snapshot;
+
+  // Bearer token lets the backend enforce credits + rate limits per user.
+  const transport = useMemo(
+    () =>
+      new DefaultChatTransport({
+        api: "/api/chat",
+        fetch: async (input, init) => {
+          const { data } = await supabase.auth.getSession();
+          const headers = new Headers(init?.headers);
+          if (data.session?.access_token) headers.set("Authorization", `Bearer ${data.session.access_token}`);
+          const res = await fetch(input as RequestInfo, { ...init, headers });
+          if (res.status === 402 || res.status === 429) {
+            toast.error(await res.clone().text());
+          }
+          void qc.invalidateQueries({ queryKey: ["credits"] });
+          return res;
+        },
+      }),
+    [qc],
+  );
   const { messages, sendMessage, status, stop, setMessages } = useChat({
     id: "aetheros-global",
     messages: initial,
@@ -77,7 +100,12 @@ export function GlobalAssistantProvider({ children }: { children: React.ReactNod
     (text: string) => {
       const value = text.trim();
       if (!value) return;
-      consumeCredits("vega_message", `Vega · ${value.slice(0, 48)}`);
+      // Pre-flight quota check so the user sees the limit before the request fails.
+      const gate = quotaFor(snapRef.current, "vega_message");
+      if (!gate.allowed) {
+        toast.error(gate.reason ?? "Quota exceeded");
+        return;
+      }
       void sendMessage({ text: `${value}\n\n[context: user is on ${pathRef.current}]` });
     },
     [sendMessage],
@@ -89,9 +117,10 @@ export function GlobalAssistantProvider({ children }: { children: React.ReactNod
   }, [setMessages]);
 
   const value = useMemo(
-    () => ({ messages, status, send, stop, clear, open, setOpen }),
-    [messages, status, send, stop, clear, open],
+    () => ({ messages, status, send, stop, clear, open, setOpen, snapshot }),
+    [messages, status, send, stop, clear, open, snapshot],
   );
+
 
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>;
 }
