@@ -143,6 +143,128 @@ export type Database = {
           },
         ]
       }
+      credit_accounts: {
+        Row: {
+          created_at: string
+          included: number
+          period: string
+          plan: string
+          topups: number
+          updated_at: string
+          used: number
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          included?: number
+          period?: string
+          plan?: string
+          topups?: number
+          updated_at?: string
+          used?: number
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          included?: number
+          period?: string
+          plan?: string
+          topups?: number
+          updated_at?: string
+          used?: number
+          user_id?: string
+        }
+        Relationships: []
+      }
+      credit_ledger: {
+        Row: {
+          balance_after: number | null
+          created_at: string
+          credits: number
+          entry_type: Database["public"]["Enums"]["credit_entry_type"]
+          id: string
+          kind: string
+          label: string
+          metadata: Json
+          period: string
+          request_id: string | null
+          reverses_id: string | null
+          user_id: string
+        }
+        Insert: {
+          balance_after?: number | null
+          created_at?: string
+          credits: number
+          entry_type: Database["public"]["Enums"]["credit_entry_type"]
+          id?: string
+          kind: string
+          label: string
+          metadata?: Json
+          period: string
+          request_id?: string | null
+          reverses_id?: string | null
+          user_id: string
+        }
+        Update: {
+          balance_after?: number | null
+          created_at?: string
+          credits?: number
+          entry_type?: Database["public"]["Enums"]["credit_entry_type"]
+          id?: string
+          kind?: string
+          label?: string
+          metadata?: Json
+          period?: string
+          request_id?: string | null
+          reverses_id?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "credit_ledger_reverses_id_fkey"
+            columns: ["reverses_id"]
+            isOneToOne: false
+            referencedRelation: "credit_ledger"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      credit_resets: {
+        Row: {
+          created_at: string
+          from_period: string
+          id: string
+          included_before: number
+          plan: string
+          to_period: string
+          topups_before: number
+          used_before: number
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          from_period: string
+          id?: string
+          included_before: number
+          plan: string
+          to_period: string
+          topups_before: number
+          used_before: number
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          from_period?: string
+          id?: string
+          included_before?: number
+          plan?: string
+          to_period?: string
+          topups_before?: number
+          used_before?: number
+          user_id?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           avatar_url: string | null
@@ -238,6 +360,43 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      adjust_credits: {
+        Args: { _amount: number; _kind?: string; _label: string }
+        Returns: Json
+      }
+      consume_credits: {
+        Args: {
+          _kind: string
+          _label: string
+          _metadata?: Json
+          _multiplier?: number
+          _plan?: string
+          _request_id?: string
+        }
+        Returns: Json
+      }
+      credit_cost: { Args: { _kind: string }; Returns: number }
+      credit_plan_config: { Args: { _plan: string }; Returns: Json }
+      credit_snapshot: { Args: { _plan?: string }; Returns: Json }
+      ensure_credit_account: {
+        Args: { _plan?: string; _user_id: string }
+        Returns: {
+          created_at: string
+          included: number
+          period: string
+          plan: string
+          topups: number
+          updated_at: string
+          used: number
+          user_id: string
+        }
+        SetofOptions: {
+          from: "*"
+          to: "credit_accounts"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
@@ -245,10 +404,15 @@ export type Database = {
         }
         Returns: boolean
       }
+      refund_credits: {
+        Args: { _amount?: number; _entry_id: string; _reason?: string }
+        Returns: Json
+      }
     }
     Enums: {
       app_role: "admin" | "user"
       cloud_provider: "aws" | "azure" | "gcp" | "multi"
+      credit_entry_type: "charge" | "refund" | "adjustment" | "topup" | "reset"
       project_status:
         | "draft"
         | "running"
@@ -384,6 +548,7 @@ export const Constants = {
     Enums: {
       app_role: ["admin", "user"],
       cloud_provider: ["aws", "azure", "gcp", "multi"],
+      credit_entry_type: ["charge", "refund", "adjustment", "topup", "reset"],
       project_status: [
         "draft",
         "running",

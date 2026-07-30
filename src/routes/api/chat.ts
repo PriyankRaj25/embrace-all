@@ -39,11 +39,54 @@ export const Route = createFileRoute("/api/chat")({
   server: {
     handlers: {
       POST: async ({ request }) => {
-        const body = (await request.json()) as { projectId?: string; messages?: unknown };
+        const body = (await request.json()) as { projectId?: string; messages?: unknown; plan?: string };
 
         if (Array.isArray(body.messages)) {
+          const chatSession = await validateBearer(request);
+          if (!chatSession) return new Response("Unauthorized", { status: 401 });
+
           const apiKey = process.env.LOVABLE_API_KEY;
           if (!apiKey) return new Response("Missing LOVABLE_API_KEY", { status: 500 });
+
+          // Server-side credit + rate-limit enforcement (idempotent per request).
+          const requestId = crypto.randomUUID();
+          const last = (body.messages as UIMessage[]).at(-1);
+          const label =
+            last?.parts?.map((p) => (p.type === "text" ? p.text : "")).join("").slice(0, 60) || "Vega message";
+          const { data: charge, error: chargeError } = await chatSession.supabase.rpc("consume_credits", {
+            _kind: "vega_message",
+            _label: `Vega · ${label}`,
+            _multiplier: 1,
+            _request_id: requestId,
+            _metadata: { surface: "vega_chat" } as never,
+            _plan: typeof body.plan === "string" ? body.plan : undefined,
+          });
+          if (chargeError) return new Response(chargeError.message, { status: 500 });
+
+          const result0 = charge as {
+            ok: boolean;
+            reason?: string;
+            entry_id?: string;
+            limit?: number;
+            window?: string;
+            remaining?: number;
+          };
+          if (!result0.ok) {
+            if (result0.reason === "rate_limited")
+              return new Response(
+                `Rate limit reached (${result0.limit} per ${result0.window}). Please retry shortly.`,
+                { status: 429 },
+              );
+            return new Response(
+              `Not enough credits — ${result0.remaining ?? 0} remaining. Top up in Billing to continue.`,
+              { status: 402 },
+            );
+          }
+          const entryId = result0.entry_id;
+          const refund = async (reason: string) => {
+            if (!entryId) return;
+            await chatSession.supabase.rpc("refund_credits", { _entry_id: entryId, _reason: reason });
+          };
 
           const gateway = createLovableAiGatewayProvider(apiKey);
           const result = streamText({
@@ -58,6 +101,7 @@ export const Route = createFileRoute("/api/chat")({
             onError: (error) => {
               console.error("[api/chat] stream error", error);
               const message = error instanceof Error ? error.message : String(error);
+              void refund("assistant response failed");
               if (message.includes("429") || /rate limit/i.test(message))
                 return "Rate limit reached — please retry in a moment.";
               if (message.includes("402") || /payment required/i.test(message))
@@ -66,6 +110,7 @@ export const Route = createFileRoute("/api/chat")({
             },
           });
         }
+
 
         const session = await validateBearer(request);
         if (!session) return new Response("Unauthorized", { status: 401 });
@@ -80,6 +125,38 @@ export const Route = createFileRoute("/api/chat")({
 
         const apiKey = process.env.LOVABLE_API_KEY;
         if (!apiKey) return new Response("Missing LOVABLE_API_KEY", { status: 500 });
+
+        // Server-side credit + rate-limit enforcement for the agent pipeline.
+        const { data: runCharge, error: runChargeError } = await session.supabase.rpc("consume_credits", {
+          _kind: "agent_run",
+          _label: `Agent pipeline · ${project.name}`,
+          _multiplier: 1,
+          _request_id: `run:${projectId}:${Date.now()}`,
+          _metadata: { project_id: projectId } as never,
+          _plan: typeof body.plan === "string" ? body.plan : undefined,
+        });
+        if (runChargeError) return new Response(runChargeError.message, { status: 500 });
+        const runResult = runCharge as {
+          ok: boolean;
+          reason?: string;
+          entry_id?: string;
+          limit?: number;
+          window?: string;
+          remaining?: number;
+        };
+        if (!runResult.ok) {
+          if (runResult.reason === "rate_limited")
+            return new Response(`Rate limit reached (${runResult.limit} agent runs per ${runResult.window}).`, {
+              status: 429,
+            });
+          return new Response(
+            `Not enough credits for an agent run — ${runResult.remaining ?? 0} remaining.`,
+            { status: 402 },
+          );
+        }
+        const runEntryId = runResult.entry_id;
+
+
 
         const gateway = createLovableAiGatewayProvider(apiKey);
         const model = gateway("openai/gpt-5.5");
@@ -180,8 +257,14 @@ export const Route = createFileRoute("/api/chat")({
               send({ type: "done", overall_status: "completed" });
             } catch (e) {
               await session.supabase.from("projects").update({ status: "failed" }).eq("id", projectId);
+              if (runEntryId)
+                await session.supabase.rpc("refund_credits", {
+                  _entry_id: runEntryId,
+                  _reason: "agent pipeline failed",
+                });
               const msg = e instanceof Error ? e.message : String(e);
               controller.enqueue(encoder.encode(JSON.stringify({ type: "error", agent: "planner", message: msg }) + "\n"));
+
             } finally {
               controller.close();
             }

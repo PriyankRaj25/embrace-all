@@ -17,8 +17,12 @@ import {
 } from "@/components/ai-elements/prompt-input";
 import { Shimmer } from "@/components/ai-elements/shimmer";
 import { cn } from "@/lib/utils";
-import { consumeCredits } from "@/lib/credits";
-import { UsageMeter } from "@/components/usage-meter";
+import { quotaFor, useCreditSnapshot, type CreditSnapshot } from "@/lib/credits";
+import { UsageMeter, QuotaStrip } from "@/components/usage-meter";
+import { supabase } from "@/integrations/supabase/client";
+import { useQueryClient } from "@tanstack/react-query";
+import { toast } from "sonner";
+
 
 const STORAGE_KEY = "aetheros.global-chat.v1";
 
@@ -40,6 +44,7 @@ type AssistantCtx = {
   clear: () => void;
   open: boolean;
   setOpen: (v: boolean) => void;
+  snapshot?: CreditSnapshot;
 };
 
 const Ctx = createContext<AssistantCtx | null>(null);
@@ -57,7 +62,30 @@ export function GlobalAssistantProvider({ children }: { children: React.ReactNod
   const pathRef = useRef(location.pathname);
   pathRef.current = location.pathname;
 
-  const transport = useMemo(() => new DefaultChatTransport({ api: "/api/chat" }), []);
+  const qc = useQueryClient();
+  const { data: snapshot } = useCreditSnapshot();
+  const snapRef = useRef<CreditSnapshot | undefined>(undefined);
+  snapRef.current = snapshot;
+
+  // Bearer token lets the backend enforce credits + rate limits per user.
+  const transport = useMemo(
+    () =>
+      new DefaultChatTransport({
+        api: "/api/chat",
+        fetch: async (input, init) => {
+          const { data } = await supabase.auth.getSession();
+          const headers = new Headers(init?.headers);
+          if (data.session?.access_token) headers.set("Authorization", `Bearer ${data.session.access_token}`);
+          const res = await fetch(input as RequestInfo, { ...init, headers });
+          if (res.status === 402 || res.status === 429) {
+            toast.error(await res.clone().text());
+          }
+          void qc.invalidateQueries({ queryKey: ["credits"] });
+          return res;
+        },
+      }),
+    [qc],
+  );
   const { messages, sendMessage, status, stop, setMessages } = useChat({
     id: "aetheros-global",
     messages: initial,
@@ -73,7 +101,12 @@ export function GlobalAssistantProvider({ children }: { children: React.ReactNod
     (text: string) => {
       const value = text.trim();
       if (!value) return;
-      consumeCredits("vega_message", `Vega · ${value.slice(0, 48)}`);
+      // Pre-flight quota check so the user sees the limit before the request fails.
+      const gate = quotaFor(snapRef.current, "vega_message");
+      if (!gate.allowed) {
+        toast.error(gate.reason ?? "Quota exceeded");
+        return;
+      }
       void sendMessage({ text: `${value}\n\n[context: user is on ${pathRef.current}]` });
     },
     [sendMessage],
@@ -85,9 +118,10 @@ export function GlobalAssistantProvider({ children }: { children: React.ReactNod
   }, [setMessages]);
 
   const value = useMemo(
-    () => ({ messages, status, send, stop, clear, open, setOpen }),
-    [messages, status, send, stop, clear, open],
+    () => ({ messages, status, send, stop, clear, open, setOpen, snapshot }),
+    [messages, status, send, stop, clear, open, snapshot],
   );
+
 
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>;
 }
@@ -194,8 +228,11 @@ export function AssistantSurface({
             <PromptInputSubmit status={status} disabled={busy && status === "submitted"} onStop={stop} />
           </PromptInputFooter>
         </PromptInput>
+        <div className="mt-2 flex flex-wrap items-center justify-center gap-1.5">
+          <QuotaStrip kinds={["vega_message"]} />
+        </div>
         <p className="mt-1.5 text-center text-[10px] text-muted-foreground/70">
-          1 credit per message · usage meters live in Billing
+          1 credit per message · charged by the backend only when a reply is produced
         </p>
       </div>
     </div>
