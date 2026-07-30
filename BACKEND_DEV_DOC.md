@@ -347,3 +347,7 @@ Browser: `VITE_SUPABASE_URL`, `VITE_SUPABASE_PUBLISHABLE_KEY`, `VITE_SUPABASE_PR
 9. **Operations** — telemetry ingest + optimization agent.
 
 Each step is independently shippable. UI is already contract-frozen — build to what the pages consume.
+
+## Credits & metering API
+
+Server-side credit enforcement, ledger, refunds, monthly reset audit and plan rate limits are documented in [docs/API_CREDITS.md](docs/API_CREDITS.md).
