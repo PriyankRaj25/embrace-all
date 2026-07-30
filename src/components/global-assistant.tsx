@@ -17,8 +17,12 @@ import {
 } from "@/components/ai-elements/prompt-input";
 import { Shimmer } from "@/components/ai-elements/shimmer";
 import { cn } from "@/lib/utils";
-import { consumeCredits } from "@/lib/credits";
-import { UsageMeter } from "@/components/usage-meter";
+import { quotaFor, useCreditSnapshot, type CreditSnapshot } from "@/lib/credits";
+import { UsageMeter, QuotaStrip } from "@/components/usage-meter";
+import { supabase } from "@/integrations/supabase/client";
+import { useQueryClient } from "@tanstack/react-query";
+import { toast } from "sonner";
+
 
 const STORAGE_KEY = "aetheros.global-chat.v1";
 
