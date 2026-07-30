@@ -104,7 +104,7 @@ export type LedgerEntry = {
   balance_after: number | null;
   request_id: string | null;
   reverses_id: string | null;
-  metadata: Record<string, unknown>;
+  metadata: Record<string, string | number | boolean | null>;
   created_at: string;
 };
 
@@ -207,7 +207,7 @@ export function useCreditActions() {
       label: string;
       multiplier?: number;
       requestId?: string;
-      metadata?: Record<string, unknown>;
+      metadata?: Record<string, string | number | boolean | null>;
     }) => charge({ data: { ...input, multiplier: input.multiplier ?? 1, plan: getBilling().plan } }),
     onSettled: invalidate,
   });

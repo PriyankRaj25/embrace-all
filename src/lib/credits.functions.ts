@@ -28,7 +28,7 @@ export const chargeCredits = createServerFn({ method: "POST" })
         label: z.string().min(1).max(200),
         multiplier: z.number().min(0).max(100).default(1),
         requestId: z.string().min(6).max(120).optional(),
-        metadata: z.record(z.string(), z.unknown()).optional(),
+        metadata: z.record(z.string(), z.union([z.string(), z.number(), z.boolean(), z.null()])).optional(),
         plan: PlanSchema,
       })
       .parse(input),
