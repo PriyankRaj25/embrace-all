@@ -126,6 +126,38 @@ export const Route = createFileRoute("/api/chat")({
         const apiKey = process.env.LOVABLE_API_KEY;
         if (!apiKey) return new Response("Missing LOVABLE_API_KEY", { status: 500 });
 
+        // Server-side credit + rate-limit enforcement for the agent pipeline.
+        const { data: runCharge, error: runChargeError } = await session.supabase.rpc("consume_credits", {
+          _kind: "agent_run",
+          _label: `Agent pipeline · ${project.name}`,
+          _multiplier: 1,
+          _request_id: `run:${projectId}:${Date.now()}`,
+          _metadata: { project_id: projectId } as never,
+          _plan: typeof body.plan === "string" ? body.plan : undefined,
+        });
+        if (runChargeError) return new Response(runChargeError.message, { status: 500 });
+        const runResult = runCharge as {
+          ok: boolean;
+          reason?: string;
+          entry_id?: string;
+          limit?: number;
+          window?: string;
+          remaining?: number;
+        };
+        if (!runResult.ok) {
+          if (runResult.reason === "rate_limited")
+            return new Response(`Rate limit reached (${runResult.limit} agent runs per ${runResult.window}).`, {
+              status: 429,
+            });
+          return new Response(
+            `Not enough credits for an agent run — ${runResult.remaining ?? 0} remaining.`,
+            { status: 402 },
+          );
+        }
+        const runEntryId = runResult.entry_id;
+
+
+
         const gateway = createLovableAiGatewayProvider(apiKey);
         const model = gateway("openai/gpt-5.5");
 
