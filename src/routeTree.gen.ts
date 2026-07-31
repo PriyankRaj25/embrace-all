@@ -32,6 +32,7 @@ import { Route as AuthenticatedSecurityFixEngineRouteImport } from './routes/_au
 import { Route as AuthenticatedSecurityComplianceRouteImport } from './routes/_authenticated/security.compliance'
 import { Route as AuthenticatedSecurityAttackPathsRouteImport } from './routes/_authenticated/security.attack-paths'
 import { Route as AuthenticatedProjectsProjectIdRouteImport } from './routes/_authenticated/projects.$projectId'
+import { Route as AuthenticatedAdminCreditsRouteImport } from './routes/_authenticated/admin.credits'
 import { Route as AuthenticatedProjectsProjectIdIndexRouteImport } from './routes/_authenticated/projects.$projectId.index'
 import { Route as LovableEmailTransactionalPreviewRouteImport } from './routes/lovable/email/transactional/preview'
 import { Route as LovableEmailAuthWebhookRouteImport } from './routes/lovable/email/auth/webhook'
@@ -163,6 +164,12 @@ const AuthenticatedProjectsProjectIdRoute =
     path: '/projects/$projectId',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const AuthenticatedAdminCreditsRoute =
+  AuthenticatedAdminCreditsRouteImport.update({
+    id: '/admin/credits',
+    path: '/admin/credits',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedProjectsProjectIdIndexRoute =
   AuthenticatedProjectsProjectIdIndexRouteImport.update({
     id: '/',
@@ -218,6 +225,7 @@ export interface FileRoutesByFullPath {
   '/vega': typeof AuthenticatedVegaRoute
   '/api/chat': typeof ApiChatRoute
   '/api/security-agents': typeof ApiSecurityAgentsRoute
+  '/admin/credits': typeof AuthenticatedAdminCreditsRoute
   '/projects/$projectId': typeof AuthenticatedProjectsProjectIdRouteWithChildren
   '/security/attack-paths': typeof AuthenticatedSecurityAttackPathsRoute
   '/security/compliance': typeof AuthenticatedSecurityComplianceRoute
@@ -248,6 +256,7 @@ export interface FileRoutesByTo {
   '/vega': typeof AuthenticatedVegaRoute
   '/api/chat': typeof ApiChatRoute
   '/api/security-agents': typeof ApiSecurityAgentsRoute
+  '/admin/credits': typeof AuthenticatedAdminCreditsRoute
   '/security/attack-paths': typeof AuthenticatedSecurityAttackPathsRoute
   '/security/compliance': typeof AuthenticatedSecurityComplianceRoute
   '/security/fix-engine': typeof AuthenticatedSecurityFixEngineRoute
@@ -280,6 +289,7 @@ export interface FileRoutesById {
   '/_authenticated/vega': typeof AuthenticatedVegaRoute
   '/api/chat': typeof ApiChatRoute
   '/api/security-agents': typeof ApiSecurityAgentsRoute
+  '/_authenticated/admin/credits': typeof AuthenticatedAdminCreditsRoute
   '/_authenticated/projects/$projectId': typeof AuthenticatedProjectsProjectIdRouteWithChildren
   '/_authenticated/security/attack-paths': typeof AuthenticatedSecurityAttackPathsRoute
   '/_authenticated/security/compliance': typeof AuthenticatedSecurityComplianceRoute
@@ -313,6 +323,7 @@ export interface FileRouteTypes {
     | '/vega'
     | '/api/chat'
     | '/api/security-agents'
+    | '/admin/credits'
     | '/projects/$projectId'
     | '/security/attack-paths'
     | '/security/compliance'
@@ -343,6 +354,7 @@ export interface FileRouteTypes {
     | '/vega'
     | '/api/chat'
     | '/api/security-agents'
+    | '/admin/credits'
     | '/security/attack-paths'
     | '/security/compliance'
     | '/security/fix-engine'
@@ -374,6 +386,7 @@ export interface FileRouteTypes {
     | '/_authenticated/vega'
     | '/api/chat'
     | '/api/security-agents'
+    | '/_authenticated/admin/credits'
     | '/_authenticated/projects/$projectId'
     | '/_authenticated/security/attack-paths'
     | '/_authenticated/security/compliance'
@@ -567,6 +580,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedProjectsProjectIdRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/admin/credits': {
+      id: '/_authenticated/admin/credits'
+      path: '/admin/credits'
+      fullPath: '/admin/credits'
+      preLoaderRoute: typeof AuthenticatedAdminCreditsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/projects/$projectId/': {
       id: '/_authenticated/projects/$projectId/'
       path: '/'
@@ -680,6 +700,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedSettingsRoute: typeof AuthenticatedSettingsRoute
   AuthenticatedTeamRoute: typeof AuthenticatedTeamRoute
   AuthenticatedVegaRoute: typeof AuthenticatedVegaRoute
+  AuthenticatedAdminCreditsRoute: typeof AuthenticatedAdminCreditsRoute
   AuthenticatedProjectsProjectIdRoute: typeof AuthenticatedProjectsProjectIdRouteWithChildren
 }
 
@@ -692,6 +713,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedSettingsRoute: AuthenticatedSettingsRoute,
   AuthenticatedTeamRoute: AuthenticatedTeamRoute,
   AuthenticatedVegaRoute: AuthenticatedVegaRoute,
+  AuthenticatedAdminCreditsRoute: AuthenticatedAdminCreditsRoute,
   AuthenticatedProjectsProjectIdRoute:
     AuthenticatedProjectsProjectIdRouteWithChildren,
 }
