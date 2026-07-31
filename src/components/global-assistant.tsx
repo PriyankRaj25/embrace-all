@@ -67,6 +67,9 @@ export function GlobalAssistantProvider({ children }: { children: React.ReactNod
   const { data: snapshot } = useCreditSnapshot();
   const snapRef = useRef<CreditSnapshot | undefined>(undefined);
   snapRef.current = snapshot;
+  const report = useIncidentReporter();
+  const reportRef = useRef(report);
+  reportRef.current = report;
 
   // Bearer token lets the backend enforce credits + rate limits per user.
   const transport = useMemo(
@@ -79,7 +82,22 @@ export function GlobalAssistantProvider({ children }: { children: React.ReactNod
           if (data.session?.access_token) headers.set("Authorization", `Bearer ${data.session.access_token}`);
           const res = await fetch(input as RequestInfo, { ...init, headers });
           if (res.status === 402 || res.status === 429) {
-            toast.error(await res.clone().text());
+            const text = await res.clone().text();
+            toast.error(text);
+            reportRef.current?.({
+              kind: res.status === 429 ? "rate_limited" : "insufficient_credits",
+              severity: "info",
+              surface: "vega_chat",
+              message: text.slice(0, 300),
+            });
+          } else if (res.status >= 500) {
+            reportRef.current?.({
+              kind: "enforcement_failure",
+              severity: "critical",
+              surface: "vega_chat",
+              message: (await res.clone().text()).slice(0, 300) || `Chat API returned ${res.status}`,
+              metadata: { status: res.status },
+            });
           }
           void qc.invalidateQueries({ queryKey: ["credits"] });
           return res;
