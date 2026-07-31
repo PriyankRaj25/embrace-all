@@ -328,11 +328,17 @@ export const Route = createFileRoute("/api/chat")({
               send({ type: "done", overall_status: "completed" });
             } catch (e) {
               await session.supabase.from("projects").update({ status: "failed" }).eq("id", projectId);
-              if (runEntryId)
+              if (runEntryId) {
                 await session.supabase.rpc("refund_credits", {
                   _entry_id: runEntryId,
                   _reason: "agent pipeline failed",
                 });
+                await logIncident(session.supabase, "stream_refund", "Agent pipeline failed — run refunded", {
+                  severity: "warning",
+                  surface: "agent_run",
+                  metadata: { project_id: projectId },
+                });
+              }
               const msg = e instanceof Error ? e.message : String(e);
               controller.enqueue(encoder.encode(JSON.stringify({ type: "error", agent: "planner", message: msg }) + "\n"));
 
