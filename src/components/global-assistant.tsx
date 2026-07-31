@@ -18,7 +18,8 @@ import {
 import { Shimmer } from "@/components/ai-elements/shimmer";
 import { cn } from "@/lib/utils";
 import { quotaFor, useCreditSnapshot, type CreditSnapshot } from "@/lib/credits";
-import { UsageMeter, QuotaStrip } from "@/components/usage-meter";
+import { UsageMeter, QuotaStrip, QuotaWarning } from "@/components/usage-meter";
+import { useIncidentReporter } from "@/lib/credits-admin";
 import { supabase } from "@/integrations/supabase/client";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
@@ -105,6 +106,14 @@ export function GlobalAssistantProvider({ children }: { children: React.ReactNod
       const gate = quotaFor(snapRef.current, "vega_message");
       if (!gate.allowed) {
         toast.error(gate.reason ?? "Quota exceeded");
+        reportRef.current?.({
+          kind: /rate limit|Rate limit|limit reached/i.test(gate.reason ?? "")
+            ? "rate_limited"
+            : "insufficient_credits",
+          severity: "info",
+          surface: "vega_chat_preflight",
+          message: gate.reason ?? "Preflight quota check blocked the request",
+        });
         return;
       }
       void sendMessage({ text: `${value}\n\n[context: user is on ${pathRef.current}]` });
@@ -213,6 +222,7 @@ export function AssistantSurface({
       </Conversation>
 
       <div className="border-t border-border/60 bg-background/30 p-3 backdrop-blur-xl">
+        <QuotaWarning kind="vega_message" className="mb-2" />
         <PromptInput
           className="neumorph-inset rounded-2xl border-transparent bg-background/40 backdrop-blur-xl"
           onSubmit={(message) => send(message.text)}
