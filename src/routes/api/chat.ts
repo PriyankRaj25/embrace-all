@@ -35,6 +35,35 @@ async function validateBearer(request: Request) {
   return { supabase, userId: data.user.id, token };
 }
 
+type SupabaseLike = { rpc: (fn: string, args: Record<string, unknown>) => Promise<{ error: unknown }> };
+
+/** Backend monitoring: record credit-enforcement anomalies for the ops dashboard. */
+async function logIncident(
+  supabase: SupabaseLike,
+  kind:
+    | "enforcement_failure"
+    | "idempotency_conflict"
+    | "rate_limited"
+    | "insufficient_credits"
+    | "refund_anomaly"
+    | "stream_refund",
+  message: string,
+  opts: { severity?: string; surface?: string; requestId?: string; metadata?: Record<string, unknown> } = {},
+) {
+  try {
+    await supabase.rpc("log_credit_incident", {
+      _kind: kind,
+      _message: message.slice(0, 500),
+      _severity: opts.severity ?? "warning",
+      _surface: opts.surface ?? "api/chat",
+      _request_id: opts.requestId ?? null,
+      _metadata: opts.metadata ?? {},
+    });
+  } catch (err) {
+    console.error("[api/chat] incident log failed", err);
+  }
+}
+
 export const Route = createFileRoute("/api/chat")({
   server: {
     handlers: {
@@ -61,7 +90,14 @@ export const Route = createFileRoute("/api/chat")({
             _metadata: { surface: "vega_chat" } as never,
             _plan: typeof body.plan === "string" ? body.plan : undefined,
           });
-          if (chargeError) return new Response(chargeError.message, { status: 500 });
+          if (chargeError) {
+            await logIncident(chatSession.supabase, "enforcement_failure", chargeError.message, {
+              severity: "critical",
+              surface: "vega_chat",
+              requestId,
+            });
+            return new Response(chargeError.message, { status: 500 });
+          }
 
           const result0 = charge as {
             ok: boolean;
@@ -71,7 +107,20 @@ export const Route = createFileRoute("/api/chat")({
             window?: string;
             remaining?: number;
           };
+          if ((charge as { idempotent?: boolean }).idempotent) {
+            await logIncident(chatSession.supabase, "idempotency_conflict", `Replayed request ${requestId}`, {
+              severity: "warning",
+              surface: "vega_chat",
+              requestId,
+            });
+          }
           if (!result0.ok) {
+            await logIncident(
+              chatSession.supabase,
+              result0.reason === "rate_limited" ? "rate_limited" : "insufficient_credits",
+              `Vega message denied: ${result0.reason}`,
+              { severity: "info", surface: "vega_chat", requestId },
+            );
             if (result0.reason === "rate_limited")
               return new Response(
                 `Rate limit reached (${result0.limit} per ${result0.window}). Please retry shortly.`,
@@ -85,7 +134,16 @@ export const Route = createFileRoute("/api/chat")({
           const entryId = result0.entry_id;
           const refund = async (reason: string) => {
             if (!entryId) return;
-            await chatSession.supabase.rpc("refund_credits", { _entry_id: entryId, _reason: reason });
+            const { error: refundError } = await chatSession.supabase.rpc("refund_credits", {
+              _entry_id: entryId,
+              _reason: reason,
+            });
+            await logIncident(
+              chatSession.supabase,
+              refundError ? "enforcement_failure" : "stream_refund",
+              refundError ? `Refund failed: ${refundError.message}` : `Auto-refund: ${reason}`,
+              { severity: refundError ? "critical" : "warning", surface: "vega_chat", requestId },
+            );
           };
 
           const gateway = createLovableAiGatewayProvider(apiKey);
@@ -135,7 +193,14 @@ export const Route = createFileRoute("/api/chat")({
           _metadata: { project_id: projectId } as never,
           _plan: typeof body.plan === "string" ? body.plan : undefined,
         });
-        if (runChargeError) return new Response(runChargeError.message, { status: 500 });
+        if (runChargeError) {
+          await logIncident(session.supabase, "enforcement_failure", runChargeError.message, {
+            severity: "critical",
+            surface: "agent_run",
+            metadata: { project_id: projectId },
+          });
+          return new Response(runChargeError.message, { status: 500 });
+        }
         const runResult = runCharge as {
           ok: boolean;
           reason?: string;
@@ -145,6 +210,12 @@ export const Route = createFileRoute("/api/chat")({
           remaining?: number;
         };
         if (!runResult.ok) {
+          await logIncident(
+            session.supabase,
+            runResult.reason === "rate_limited" ? "rate_limited" : "insufficient_credits",
+            `Agent run denied: ${runResult.reason}`,
+            { severity: "info", surface: "agent_run", metadata: { project_id: projectId } },
+          );
           if (runResult.reason === "rate_limited")
             return new Response(`Rate limit reached (${runResult.limit} agent runs per ${runResult.window}).`, {
               status: 429,
