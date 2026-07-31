@@ -35,7 +35,7 @@ async function validateBearer(request: Request) {
   return { supabase, userId: data.user.id, token };
 }
 
-type SupabaseLike = { rpc: (fn: string, args: Record<string, unknown>) => Promise<{ error: unknown }> };
+type SupabaseLike = { rpc: (fn: never, args: never) => PromiseLike<{ error: { message: string } | null }> };
 
 /** Backend monitoring: record credit-enforcement anomalies for the ops dashboard. */
 async function logIncident(
@@ -51,14 +51,14 @@ async function logIncident(
   opts: { severity?: string; surface?: string; requestId?: string; metadata?: Record<string, unknown> } = {},
 ) {
   try {
-    await supabase.rpc("log_credit_incident", {
+    await supabase.rpc("log_credit_incident" as never, {
       _kind: kind,
       _message: message.slice(0, 500),
       _severity: opts.severity ?? "warning",
       _surface: opts.surface ?? "api/chat",
       _request_id: opts.requestId ?? null,
       _metadata: opts.metadata ?? {},
-    });
+    } as never);
   } catch (err) {
     console.error("[api/chat] incident log failed", err);
   }
