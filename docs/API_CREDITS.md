@@ -124,3 +124,73 @@ UI surfaces:
 - `UsageMeter` — sidebar / chat balance bar.
 - `QuotaStrip` — remaining per-minute and per-day quota chips (shown in Vega's composer **before** a request fails).
 - `UsagePanel` (Billing) — balance, quotas, per-entry ledger with refund buttons, top-ups, monthly reset audit log.
+
+---
+
+## 7. Monitoring & alerting
+
+### `credit_incidents`
+Append-only enforcement telemetry written by the server (and by the client transport for
+unexpected responses).
+
+| Column | Notes |
+| --- | --- |
+| `kind` | `enforcement_failure \| idempotency_conflict \| rate_limited \| insufficient_credits \| refund_failure \| transport_error` |
+| `severity` | `info \| warning \| critical` |
+| `surface` | `chat \| orchestration \| client \| admin` |
+| `message`, `request_id`, `entry_id`, `metadata` | Diagnostic payload |
+| `resolved_at`, `resolved_by` | Set by an admin from the ops console |
+
+### `credit_ops_metrics(_hours int default 24) -> jsonb` (admin only)
+Health report for the window:
+
+```jsonc
+{
+  "window_hours": 24,
+  "charges": 1820, "charge_count": 940,
+  "refunds": 96, "refund_count": 41, "refund_rate": 5.3,
+  "enforcement_failures": 0, "idempotency_conflicts": 2, "rate_limited": 7,
+  "top_refunders": [{ "user_id": "…", "charged": 220, "refunded": 60, "refund_rate": 27.3 }],
+  "alerts": [{ "id": "refund_rate", "severity": "critical", "title": "…", "detail": "…" }]
+}
+```
+
+Alert thresholds: refund rate ≥ 10% (warning) / ≥ 25% (critical); any enforcement failure
+(critical); ≥ 3 idempotency conflicts (warning).
+
+## 8. Admin RPCs (require `has_role(auth.uid(),'admin')`)
+
+| RPC | Purpose |
+| --- | --- |
+| `admin_adjust_user_credits(_user_id, _amount, _kind, _label, _reason)` | `topup` (adds to `topups`), `adjustment` (reduces `used`), `decrement` (increases `used`) |
+| `admin_refund_entry(_entry_id, _reason, _amount)` | Refund any user's charge |
+| `admin_list_accounts(_search, _limit)` | Balance list with email lookup |
+| `admin_list_ledger(_user_id, _limit)` | Any user's ledger |
+| `admin_list_incidents(_limit, _unresolved_only)` | Incident feed |
+| `admin_resolve_incident(_id)` | Mark an incident handled |
+| `admin_list_audit(_limit)` | Admin action audit trail |
+
+Every admin mutation writes a `credit_admin_audit` row: `actor_id`, `target_user_id`,
+`action`, `amount`, `reason`, `before_snapshot`, `after_snapshot`, `created_at`.
+
+## 9. Admin server functions (`src/lib/credits-admin.functions.ts`)
+
+`isCreditAdmin`, `getOpsMetrics`, `listIncidents`, `resolveIncident`, `listAdminAccounts`,
+`listAdminLedger`, `adminAdjustCredits`, `adminRefundEntry`, `listAdminAudit` — all behind
+`requireSupabaseAuth` plus a server-side `has_role` check (403 for non-admins).
+
+Hooks live in `src/lib/credits-admin.ts` (`useIsCreditAdmin`, `useOpsMetrics`, `useIncidents`,
+`useAdminAccounts`, `useAdminLedger`, `useAdminAudit`, `useAdminCreditActions`).
+
+## 10. Preflight quota UI
+
+`preflightWarning(snapshot, kind, multiplier)` in `src/components/usage-meter.tsx` returns a
+`warning` (< 10% balance, ≤ 20% of the per-minute window, ≤ 10% of the daily window) or
+`blocked` verdict *before* a request is sent. `<QuotaWarning />` renders it inline — mounted
+above Vega's composer and above the project workspace run controls.
+
+## 11. Admin console
+
+`/admin/credits` (sidebar → Account → **Credit ops**, admin only): metric tiles, live alerts,
+incident feed with resolve, per-account balance search, top-up / credit-back / decrement,
+per-entry refunds and the full audit trail.
