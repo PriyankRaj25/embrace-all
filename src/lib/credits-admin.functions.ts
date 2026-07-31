@@ -109,7 +109,7 @@ export const listAdminAccounts = createServerFn({ method: "GET" })
   )
   .handler(async ({ data, context }) => {
     const { data: rows, error } = await context.supabase.rpc("admin_credit_accounts", {
-      _search: data.search ?? null,
+      _search: data.search,
       _limit: data.limit,
     });
     if (error) throw new Error(error.message);

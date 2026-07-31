@@ -32,7 +32,7 @@ export type CreditIncident = {
   surface: string;
   message: string;
   request_id: string | null;
-  metadata: Record<string, unknown>;
+  metadata: Record<string, string | number | boolean | null>;
   resolved_at: string | null;
   created_at: string;
 };
@@ -83,8 +83,8 @@ export type AdminAuditEntry = {
   amount: number | null;
   reason: string;
   entry_id: string | null;
-  before_snapshot: Record<string, unknown>;
-  after_snapshot: Record<string, unknown>;
+  before_snapshot: Record<string, string | number | null>;
+  after_snapshot: Record<string, string | number | null>;
   created_at: string;
 };
 
