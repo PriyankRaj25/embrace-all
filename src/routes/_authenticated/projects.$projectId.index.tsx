@@ -19,6 +19,7 @@ import {
 import { ArtifactView } from "@/components/artifact-view";
 import { DEMO_PROJECT_ID, demoProject, demoRuns, demoApprovals, demoArtifacts } from "@/lib/demo-blueprint";
 import { OrchestrationOverlay } from "@/components/orchestration-overlay";
+import { QuotaWarning } from "@/components/usage-meter";
 import { WorkspaceChat } from "@/components/workspace-chat";
 import { MessageSquare } from "lucide-react";
 
@@ -237,6 +238,8 @@ function WorkspacePage() {
           )}
         </div>
       </header>
+
+      {!running && <QuotaWarning kind="agent_run" className="mx-4 mt-3" />}
 
       <OrchestrationOverlay
         open={running}

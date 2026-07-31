@@ -7,6 +7,8 @@ import { useQueryClient } from "@tanstack/react-query";
 import { getOnboarding } from "@/lib/workspace-store";
 import { GlobalAssistantProvider, GlobalAssistantDock } from "@/components/global-assistant";
 import { UsageMeter } from "@/components/usage-meter";
+import { useIsCreditAdmin } from "@/lib/credits-admin";
+import { Gauge } from "lucide-react";
 
 export const Route = createFileRoute("/_authenticated")({
   ssr: false,
@@ -75,6 +77,7 @@ function AuthenticatedLayout() {
           <NavSection label="Account">
             <NavLink to="/billing"  icon={CreditCard} label="Billing & plans" />
             <NavLink to="/settings" icon={Settings} label="Settings" />
+            <AdminLink />
           </NavSection>
 
         </nav>
@@ -124,6 +127,12 @@ function NavLink({ to, icon: Icon, label }: { to: string; icon: typeof LayoutGri
       {label}
     </Link>
   );
+}
+
+function AdminLink() {
+  const { data: isAdmin } = useIsCreditAdmin();
+  if (!isAdmin) return null;
+  return <NavLink to="/admin/credits" icon={Gauge} label="Credit ops" />;
 }
 
 function DemoLink() {

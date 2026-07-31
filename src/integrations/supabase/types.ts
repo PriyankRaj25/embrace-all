@@ -176,6 +176,90 @@ export type Database = {
         }
         Relationships: []
       }
+      credit_admin_audit: {
+        Row: {
+          action: string
+          actor_id: string
+          after_snapshot: Json
+          amount: number | null
+          before_snapshot: Json
+          created_at: string
+          entry_id: string | null
+          id: string
+          reason: string
+          target_user_id: string
+        }
+        Insert: {
+          action: string
+          actor_id: string
+          after_snapshot?: Json
+          amount?: number | null
+          before_snapshot?: Json
+          created_at?: string
+          entry_id?: string | null
+          id?: string
+          reason: string
+          target_user_id: string
+        }
+        Update: {
+          action?: string
+          actor_id?: string
+          after_snapshot?: Json
+          amount?: number | null
+          before_snapshot?: Json
+          created_at?: string
+          entry_id?: string | null
+          id?: string
+          reason?: string
+          target_user_id?: string
+        }
+        Relationships: []
+      }
+      credit_incidents: {
+        Row: {
+          created_at: string
+          id: string
+          kind: Database["public"]["Enums"]["credit_incident_kind"]
+          message: string
+          metadata: Json
+          request_id: string | null
+          resolved_at: string | null
+          resolved_by: string | null
+          severity: string
+          surface: string
+          updated_at: string
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          kind: Database["public"]["Enums"]["credit_incident_kind"]
+          message: string
+          metadata?: Json
+          request_id?: string | null
+          resolved_at?: string | null
+          resolved_by?: string | null
+          severity?: string
+          surface?: string
+          updated_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          kind?: Database["public"]["Enums"]["credit_incident_kind"]
+          message?: string
+          metadata?: Json
+          request_id?: string | null
+          resolved_at?: string | null
+          resolved_by?: string | null
+          severity?: string
+          surface?: string
+          updated_at?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       credit_ledger: {
         Row: {
           balance_after: number | null
@@ -364,6 +448,34 @@ export type Database = {
         Args: { _amount: number; _kind?: string; _label: string }
         Returns: Json
       }
+      admin_account_state: { Args: { _user_id: string }; Returns: Json }
+      admin_adjust_user_credits: {
+        Args: {
+          _amount: number
+          _kind?: string
+          _label: string
+          _reason?: string
+          _user_id: string
+        }
+        Returns: Json
+      }
+      admin_credit_accounts: {
+        Args: { _limit?: number; _search?: string }
+        Returns: Json
+      }
+      admin_credit_audit: { Args: { _limit?: number }; Returns: Json }
+      admin_credit_incidents: {
+        Args: { _limit?: number; _only_open?: boolean }
+        Returns: Json
+      }
+      admin_credit_ledger: {
+        Args: { _limit?: number; _user_id: string }
+        Returns: Json
+      }
+      admin_refund_entry: {
+        Args: { _amount?: number; _entry_id: string; _reason?: string }
+        Returns: Json
+      }
       consume_credits: {
         Args: {
           _kind: string
@@ -376,6 +488,7 @@ export type Database = {
         Returns: Json
       }
       credit_cost: { Args: { _kind: string }; Returns: number }
+      credit_ops_metrics: { Args: { _hours?: number }; Returns: Json }
       credit_plan_config: { Args: { _plan: string }; Returns: Json }
       credit_snapshot: { Args: { _plan?: string }; Returns: Json }
       ensure_credit_account: {
@@ -404,15 +517,36 @@ export type Database = {
         }
         Returns: boolean
       }
+      is_current_user_admin: { Args: never; Returns: boolean }
+      log_credit_incident: {
+        Args: {
+          _kind: Database["public"]["Enums"]["credit_incident_kind"]
+          _message: string
+          _metadata?: Json
+          _request_id?: string
+          _severity?: string
+          _surface?: string
+          _user_id?: string
+        }
+        Returns: string
+      }
       refund_credits: {
         Args: { _amount?: number; _entry_id: string; _reason?: string }
         Returns: Json
       }
+      resolve_credit_incident: { Args: { _incident_id: string }; Returns: Json }
     }
     Enums: {
       app_role: "admin" | "user"
       cloud_provider: "aws" | "azure" | "gcp" | "multi"
       credit_entry_type: "charge" | "refund" | "adjustment" | "topup" | "reset"
+      credit_incident_kind:
+        | "enforcement_failure"
+        | "idempotency_conflict"
+        | "rate_limited"
+        | "insufficient_credits"
+        | "refund_anomaly"
+        | "stream_refund"
       project_status:
         | "draft"
         | "running"
@@ -549,6 +683,14 @@ export const Constants = {
       app_role: ["admin", "user"],
       cloud_provider: ["aws", "azure", "gcp", "multi"],
       credit_entry_type: ["charge", "refund", "adjustment", "topup", "reset"],
+      credit_incident_kind: [
+        "enforcement_failure",
+        "idempotency_conflict",
+        "rate_limited",
+        "insufficient_credits",
+        "refund_anomaly",
+        "stream_refund",
+      ],
       project_status: [
         "draft",
         "running",

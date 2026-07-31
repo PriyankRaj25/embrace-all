@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { Zap, RotateCcw, ArrowDownRight, ArrowUpRight, History, Gauge } from "lucide-react";
+import { Zap, RotateCcw, ArrowDownRight, ArrowUpRight, History, Gauge, AlertTriangle } from "lucide-react";
 import { toast } from "sonner";
 import {
   CREDIT_COST,
@@ -92,6 +92,100 @@ export function QuotaStrip({ className, kinds }: { className?: string; kinds?: U
     </div>
   );
 }
+
+export type PreflightWarning = {
+  level: "warning" | "blocked";
+  title: string;
+  detail: string;
+};
+
+/** Pure preflight evaluation: warns *before* the request is rejected. */
+export function preflightWarning(
+  snapshot: ReturnType<typeof useCreditSummary>["snapshot"],
+  kind: UsageKind,
+  multiplier = 1,
+): PreflightWarning | null {
+  if (!snapshot) return null;
+  const cost = CREDIT_COST[kind] * multiplier;
+  const w = snapshot.limits?.[kind];
+
+  if (snapshot.remaining < cost)
+    return {
+      level: "blocked",
+      title: "Out of credits",
+      detail: `${cost} credits needed, ${snapshot.remaining} left on ${snapshot.plan}. Top up in Billing.`,
+    };
+  if (w && w.remaining_minute <= 0)
+    return {
+      level: "blocked",
+      title: "Per-minute rate limit reached",
+      detail: `${w.per_minute} ${kind.replace(/_/g, " ")}s per minute on ${snapshot.plan}. Retry in under a minute.`,
+    };
+  if (w && w.remaining_day <= 0)
+    return {
+      level: "blocked",
+      title: "Daily limit reached",
+      detail: `${w.per_day} ${kind.replace(/_/g, " ")}s per day on ${snapshot.plan}. Resets at midnight UTC.`,
+    };
+  if (snapshot.total > 0 && snapshot.remaining / snapshot.total <= 0.1)
+    return {
+      level: "warning",
+      title: "Low credit balance",
+      detail: `${snapshot.remaining.toLocaleString()} of ${snapshot.total.toLocaleString()} credits left (${Math.round(
+        (snapshot.remaining / snapshot.total) * 100,
+      )}%). Top up before your next run fails.`,
+    };
+  if (w && w.remaining_minute <= Math.max(1, Math.ceil(w.per_minute * 0.2)))
+    return {
+      level: "warning",
+      title: "Near the per-minute limit",
+      detail: `${w.remaining_minute} of ${w.per_minute} ${kind.replace(/_/g, " ")}s left this minute.`,
+    };
+  if (w && w.remaining_day <= Math.max(2, Math.ceil(w.per_day * 0.1)))
+    return {
+      level: "warning",
+      title: "Near the daily limit",
+      detail: `${w.remaining_day} of ${w.per_day} ${kind.replace(/_/g, " ")}s left today on ${snapshot.plan}.`,
+    };
+  return null;
+}
+
+/** Inline banner shown before a request is attempted. */
+export function QuotaWarning({
+  kind = "vega_message",
+  multiplier = 1,
+  className,
+}: {
+  kind?: UsageKind;
+  multiplier?: number;
+  className?: string;
+}) {
+  const s = useCreditSummary();
+  const warn = preflightWarning(s.snapshot, kind, multiplier);
+  if (!warn) return null;
+  const blocked = warn.level === "blocked";
+
+  return (
+    <div
+      className={cn(
+        "glass-subtle flex items-start gap-2 rounded-xl border px-3 py-2 text-[11px] backdrop-blur-xl",
+        blocked ? "border-destructive/50 bg-destructive/5" : "border-border/70",
+        className,
+      )}
+    >
+      <AlertTriangle className={cn("mt-0.5 h-3.5 w-3.5 shrink-0", blocked ? "text-destructive" : "text-muted-foreground")} />
+      <div className="min-w-0 flex-1">
+        <div className={cn("font-medium", blocked && "text-destructive")}>{warn.title}</div>
+        <div className="text-muted-foreground">{warn.detail}</div>
+      </div>
+      <Link to="/billing" className="shrink-0 font-mono text-[10px] text-muted-foreground hover:text-foreground">
+        billing →
+      </Link>
+    </div>
+  );
+}
+
+
 
 function EntryIcon({ e }: { e: LedgerEntry }) {
   if (e.entry_type === "reset") return <RotateCcw className="h-3.5 w-3.5 text-muted-foreground" />;
