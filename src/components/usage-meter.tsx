@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { Zap, RotateCcw, ArrowDownRight, ArrowUpRight, History, Gauge } from "lucide-react";
+import { Zap, RotateCcw, ArrowDownRight, ArrowUpRight, History, Gauge, AlertTriangle } from "lucide-react";
 import { toast } from "sonner";
 import {
   CREDIT_COST,
